@@ -20,6 +20,7 @@ jobs:
     name: Prepare
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         GOOS: [linux, darwin, windows]
         GOARCH: [amd64, arm64]
