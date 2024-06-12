@@ -38,6 +38,9 @@ jobs:
           remove-dotnet: "true"
           remove-haskell: "true"
 
+      - name: Install Dependences
+        run: sudo apt install libpcap-dev
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -105,6 +108,9 @@ jobs:
           remove-docker-images: "true"
           remove-dotnet: "true"
           remove-haskell: "true"
+
+      - name: Install Dependences
+        run: sudo apt install libpcap-dev
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

@@ -14,5 +14,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Install Dependences
+        run: sudo apt install libpcap-dev
+
       - name: Godel Verify
         run: ./godelw verify
