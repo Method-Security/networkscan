@@ -1,0 +1,8 @@
+products:
+  networkscan:
+    build:
+      main-pkg: .
+      version-var: main.version
+    dist:
+      disters:
+        type: os-arch-bin

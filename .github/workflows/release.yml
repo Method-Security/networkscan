@@ -1,0 +1,15 @@
+name: 🎉 Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    name: Release
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      goreleaser_config: goreleaser.yml
+      goreleaser_options: "--clean"
+    secrets: inherit

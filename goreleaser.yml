@@ -1,0 +1,126 @@
+version: 2
+
+project_name: networkscan
+builds:
+  - id: build-linux
+    main: .
+    binary: networkscan
+    ldflags:
+      - -s -w
+      - "-extldflags '-static'"
+      - -X github.com/method-security/networkscan/main.version={{.Version}}
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - "7"
+  - id: build-macos
+    main: .
+    binary: networkscan
+    ldflags:
+      - -s -w
+      - "-extldflags '-static'"
+      - -X github.com/method-security/networkscan/main.version={{.Version}}
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - "7"
+  - id: build-windows
+    main: .
+    binary: networkscan
+    ldflags:
+      - -s -w
+      - "-extldflags '-static'"
+      - -X github.com/method-security/networkscan/main.version={{.Version}}
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - windows
+    goarch:
+      - amd64
+    goarm:
+      - "7"
+
+release:
+  extra_files:
+    - glob: ./bom.json
+
+archives:
+  - id: archive
+    format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_
+      {{- if eq .Os "darwin" }}macOS
+      {{- else if eq .Os "linux" }}Linux
+      {{- else}}{{- .Os }}{{ end }}-
+      {{- if eq .Arch "amd64" }}64bit
+      {{- else if eq .Arch "386" }}32bit
+      {{- else if eq .Arch "arm" }}ARM
+      {{- else if eq .Arch "arm64" }}ARM64
+      {{- else }}{{ .Arch }}{{ end }}
+    files:
+      - README.md
+      - LICENSE
+    format_overrides:
+      - goos: windows
+        format: zip
+
+dockers:
+  - image_templates:
+      - "ghcr.io/method-security/networkscan:{{ .Version }}-amd64"
+      - "ghcr.io/method-security/networkscan:latest-amd64"
+    use: buildx
+    goos: linux
+    goarch: amd64
+    ids:
+      - build-linux
+    build_flag_templates:
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.description=An on-rails AWS enumeration tool"
+      - "--label=org.opencontainers.image.vendor=Method Security"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.source=https://github.com/method-security/networkscan"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.url=https://method.security"
+      - "--label=org.opencontainers.image.documentation=https://github.com/method-security/networkscan"
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "ghcr.io/method-security/networkscan:{{ .Version }}-arm64"
+      - "ghcr.io/method-security/networkscan:latest-arm64"
+    use: buildx
+    goos: linux
+    goarch: arm64
+    ids:
+      - build-linux
+    build_flag_templates:
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.description=An on-rails AWS enumeration tool"
+      - "--label=org.opencontainers.image.vendor=Method Security"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.source=https://github.com/method-security/networkscan"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.url=https://method.security"
+      - "--label=org.opencontainers.image.documentation=https://github.com/method-security/networkscan"
+      - "--platform=linux/arm64"
+
+docker_manifests:
+  - name_template: 'ghcr.io/method-security/networkscan:{{ .Version }}'
+    image_templates:
+    - 'ghcr.io/method-security/networkscan:{{ .Version }}-amd64'
+    - 'ghcr.io/method-security/networkscan:{{ .Version }}-arm64'
+
+sboms:
+  - artifacts: archive
+  - id: source
+    artifacts: source

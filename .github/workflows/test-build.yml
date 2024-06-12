@@ -1,0 +1,14 @@
+name: 🔨 Build Test
+on:
+  pull_request:
+    paths:
+      - "**.*"
+
+jobs:
+  build:
+    name: Test Build
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      goreleaser_config: goreleaser.yml
+      goreleaser_options: "--clean --snapshot"
+    secrets: inherit
