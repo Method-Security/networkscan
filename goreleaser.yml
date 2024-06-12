@@ -14,7 +14,7 @@ builds:
     binary: networkscan
     ldflags:
       - -s -w
-      - "-extldflags '-static'"
+      - "-extldflags '-static -lm -ldl -lpthread'"
       - -X github.com/method-security/networkscan/main.version={{.Version}}
     env:
       - CGO_ENABLED=1
@@ -29,7 +29,6 @@ builds:
     binary: networkscan
     ldflags:
       - -s -w
-      - "-extldflags '-static'"
       - -X github.com/method-security/networkscan/main.version={{.Version}}
     env:
       - CGO_ENABLED=1
@@ -44,7 +43,6 @@ builds:
     binary: networkscan
     ldflags:
       - -s -w
-      - "-extldflags '-static'"
       - -X github.com/method-security/networkscan/main.version={{.Version}}
     env:
       - CGO_ENABLED=1
