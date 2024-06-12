@@ -6,7 +6,7 @@ version: 2
 project_name: networkscan
 
 partial:
-  by: target
+  by: goos
 
 builds:
   - id: build-linux
@@ -54,8 +54,6 @@ builds:
       - windows
     goarch:
       - amd64
-    goarm:
-      - "7"
 
 release:
   extra_files:
