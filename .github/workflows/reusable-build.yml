@@ -31,7 +31,11 @@ jobs:
     steps:
       - name: Install Dependences
         run: sudo apt install libpcap-dev
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os != 'ubuntu-latest'
+
+      - name: Install Dependencies
+        run: brew install libpcap
+        if: matrix.os == 'macos-latest'
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

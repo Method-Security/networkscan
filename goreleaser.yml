@@ -22,7 +22,6 @@ builds:
       - linux
     goarch:
       - amd64
-      - arm64
     goarm:
       - "7"
   - id: build-macos
@@ -37,7 +36,6 @@ builds:
     goos:
       - darwin
     goarch:
-      - amd64
       - arm64
     goarm:
       - "7"
