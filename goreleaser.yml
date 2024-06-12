@@ -1,6 +1,13 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
 version: 2
 
 project_name: networkscan
+
+partial:
+  by: target
+
 builds:
   - id: build-linux
     main: .
