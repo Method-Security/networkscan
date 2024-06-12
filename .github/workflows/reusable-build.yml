@@ -14,7 +14,6 @@ on:
 
 env:
   GO_VERSION: "1.22"
-  GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
 jobs:
   prepare:
