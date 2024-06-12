@@ -19,6 +19,9 @@ jobs:
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true
     strategy:
       matrix:
         GOOS: [linux, darwin, windows]
@@ -98,6 +101,9 @@ jobs:
     name: Build
     needs: prepare
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     permissions:
