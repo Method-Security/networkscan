@@ -88,7 +88,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: release --clean --split ${{ env.flags }}
+          args: release --clean --split -f=${{ inputs.goreleaser_config}} ${{ inputs.goreleaser_options}}
         env:
           GOOS: ${{ matrix.GOOS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -172,7 +172,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: continue --merge
+          args: continue --merge -f=${{ inputs.goreleaser_config}} ${{ inputs.goreleaser_options}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
