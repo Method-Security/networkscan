@@ -34,7 +34,10 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
 
       - name: Install Dependencies
-        run: brew install libpcap
+        run: |
+          brew update
+          brew install libpcap
+          echo "LD_LIBRARY_PATH=$(brew --prefix)/Cellar/libpcap/*/lib" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
 
       - name: Set up QEMU
