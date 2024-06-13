@@ -3,12 +3,14 @@ on:
   pull_request:
     paths:
       - "**.*"
-
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Test Build
     uses: ./.github/workflows/reusable-build.yml
     with:
       goreleaser_config: goreleaser.yml
-      goreleaser_options: "--clean --snapshot"
+      goreleaser_options: "--snapshot"
     secrets: inherit
