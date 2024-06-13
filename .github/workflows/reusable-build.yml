@@ -202,7 +202,7 @@ jobs:
         shell: bash
 
       - name: View Output
-        run: ls -al output
+        run: ls -al output output/*
 
       # release
       - uses: goreleaser/goreleaser-action@v4
