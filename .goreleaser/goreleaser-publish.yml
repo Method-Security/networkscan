@@ -19,7 +19,7 @@ builds:
       - goos: darwin
         goarch: amd64
     prebuilt:
-      path: output/*/build-{{ if eq .Os "darwin" }}macos_{{ else }}{{ .Os }}_{{ end }}{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/networkscan{{ if eq .Os "windows" }}.exe{{ end }}
+      path: output/build-{{ .Os }}_{{ .Arch }}/networkscan{{ if eq .Os "windows" }}.exe{{ end }}
     binary: networkscan
 
 archives:
