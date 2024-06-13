@@ -51,10 +51,6 @@ jobs:
         shell: bash
         run: docker buildx build . --platform linux/amd64 --load --tag amdbuilder -f Dockerfile.builder
 
-      - name: ARM64 Git Status Check
-        shell: bash
-        run: docker run -v .:/app/networkscan -e GOARCH=arm64 -e GOOS=linux -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm armbuilder git status
-
       - name: Build ARM64 Image
         shell: bash
         run: docker run -v .:/app/networkscan -e GOARCH=arm64 -e GOOS=linux -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm armbuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
@@ -62,6 +58,12 @@ jobs:
       - name: Build AMD64 Image
         shell: bash
         run: docker run -v .:/app/networkscan -e GOARCH=amd64 -e GOOS=linux -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm amdbuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-dist
+          path: dist/
+          retention-days: 7
 
   prepare:
     name: Prepare
@@ -111,30 +113,6 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Set sha_short Environment Variable
-        shell: bash
-        run: |
-          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v3.2.3
-        if: matrix.os == 'ubuntu-latest'
-        with:
-          path: dist/linux
-          key: linux-${{ env.sha_short }}
-
-      - uses: actions/cache@v3.2.3
-        if: matrix.os == 'macos-latest'
-        with:
-          path: dist/darwin
-          key: darwin-${{ env.sha_short }}
-
-      - uses: actions/cache@v3.2.3
-        if: matrix.os == 'windows-latest'
-        with:
-          path: dist/windows
-          key: windows-${{ env.sha_short }}
-          enableCrossOsArchive: true
-
       - uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser-pro
@@ -143,6 +121,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
 
   build:
     name: Build
@@ -201,29 +185,13 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      # copy the cashes from prepare
-      - shell: bash
-        run: |
-          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v3
+      - uses: actions/download-artifact@v4
         with:
-          path: dist/linux
-          key: linux-${{ env.sha_short }}
-
-      - uses: actions/cache@v3
-        with:
-          path: dist/darwin
-          key: darwin-${{ env.sha_short }}
-
-      - uses: actions/cache@v3
-        with:
-          path: dist/windows
-          key: windows-${{ env.sha_short }}
+          path: output
 
       - shell: bash
         run: |
-          ls -l dist
+          ls -l dist output
 
       # release
       - uses: goreleaser/goreleaser-action@v4
