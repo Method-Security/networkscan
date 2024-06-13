@@ -51,6 +51,10 @@ jobs:
         shell: bash
         run: docker buildx build . --platform linux/amd64 --load --tag amdbuilder -f Dockerfile.builder
 
+      - name: ARM64 Git Status Check
+        shell: bash
+        run: docker run -v .:/app/networkscan -e GOARCH=arm64 -e GOOS=linux -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm armbuilder git status
+
       - name: Build ARM64 Image
         shell: bash
         run: docker run -v .:/app/networkscan -e GOARCH=arm64 -e GOOS=linux -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm armbuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
