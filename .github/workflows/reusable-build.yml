@@ -185,9 +185,21 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - uses: actions/download-artifact@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: output
+          path: artifacts
+
+      - name: View Artifacts
+        run: ls -al artifacts
+
+      - name: Arrange Artifacts
+        run: |
+          mkdir -p output
+          mv artifacts/linux-dist/* output/
+          mv artifacts/darwin_* output/
+          mv artifacts/windows_* output/
+        shell: bash
 
       # release
       - uses: goreleaser/goreleaser-action@v4
