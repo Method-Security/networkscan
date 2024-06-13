@@ -46,10 +46,10 @@ jobs:
       - name: Build Multi-Arch Images
         shell: bash
         run: |
-          docker buildx build . --platform linux/arm64 --load --tag armBuilder -f Dockerfile.builder
-          docker buildx build . --platform linux/amd64 --load --tag amdBuilder -f Dockerfile.builder
-          docker run -v .:/app/networkscan -e GOARCH=amd64 -e GOOS=linux -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm armBuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
-          docker run -v .:/app/networkscan -e GOARCH=amd64 -e GOOS=linux -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm amdBuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
+          docker buildx build . --platform linux/arm64 --load --tag armbuilder -f Dockerfile.builder
+          docker buildx build . --platform linux/amd64 --load --tag amdbuilder -f Dockerfile.builder
+          docker run -v .:/app/networkscan -e GOARCH=amd64 -e GOOS=linux -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm armbuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
+          docker run -v .:/app/networkscan -e GOARCH=amd64 -e GOOS=linux -e GORELEASER_KEY=${{ secrets.GORELEASER_KEY }} --rm amdbuilder goreleaser build --single-target -f .goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
 
   prepare:
     name: Prepare
@@ -127,7 +127,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: build --single-target --clean --split -f=.goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options}}
+          args: build -f=.goreleaser/goreleaser-build.yml ${{ inputs.goreleaser_options }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
