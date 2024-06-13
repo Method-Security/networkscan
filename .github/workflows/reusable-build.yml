@@ -21,8 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
-    permissions:
-      contents: read
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -75,8 +73,6 @@ jobs:
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
       flags: ""
-    permissions:
-      contents: read
     steps:
       - name: Install Dependencies
         run: |
@@ -136,8 +132,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
-    permissions:
-      contents: read
     steps:
       - name: Maximize build space
         uses: easimon/maximize-build-space@v10

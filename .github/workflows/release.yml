@@ -13,3 +13,7 @@ jobs:
       goreleaser_config: goreleaser.yml
       goreleaser_options: ""
     secrets: inherit
+    permissions:
+      id-token: write # For cosign
+      packages: write # For GHCR
+      contents: write # To upload archives as release assets

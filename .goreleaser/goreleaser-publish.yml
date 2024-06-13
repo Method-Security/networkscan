@@ -3,7 +3,8 @@ version: 2
 project_name: networkscan
 
 builds:
-  - builder: prebuilt
+  - id: prebuilt
+    builder: prebuilt
     goos:
       - linux
       - darwin
@@ -53,7 +54,7 @@ dockers:
     goos: linux
     goarch: amd64
     ids:
-      - build-linux
+      - prebuilt
     build_flag_templates:
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.description=An on-rails AWS enumeration tool"
@@ -72,7 +73,7 @@ dockers:
     goos: linux
     goarch: arm64
     ids:
-      - build-linux
+      - prebuilt
     build_flag_templates:
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.description=An on-rails AWS enumeration tool"
