@@ -16,6 +16,8 @@ builds:
     ignore:
       - goos: windows
         goarch: arm64
+      - goos: darwin
+        goarch: arm64
     prebuilt:
       path: output/*/build_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/networkscan
     binary: networkscan
