@@ -1,55 +1,24 @@
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-# vim: set ts=2 sw=2 tw=0 fo=cnqoj
-
 version: 2
 
 project_name: networkscan
 
-partial:
-  by: goos
-
 builds:
-  - id: build-linux
-    main: .
-    binary: networkscan
-    ldflags:
-      - -s -w
-      - "-extldflags '-static -lm -ldl -lpthread'"
-      - -X github.com/method-security/networkscan/main.version={{.Version}}
-    env:
-      - CGO_ENABLED=1
+  - builder: prebuilt
     goos:
       - linux
-    goarch:
-      - amd64
-    goarm:
-      - "7"
-  - id: build-macos
-    main: .
-    binary: networkscan
-    ldflags:
-      - -s -w
-      - -X github.com/method-security/networkscan/main.version={{.Version}}
-    env:
-      - CGO_ENABLED=1
-    goos:
       - darwin
-    goarch:
-      - arm64
-    goarm:
-      - "7"
-  - id: build-windows
-    main: .
-    binary: networkscan
-    ldflags:
-      - -s -w
-      - -X github.com/method-security/networkscan/main.version={{.Version}}
-    env:
-      - CGO_ENABLED=1
-    goos:
       - windows
     goarch:
       - amd64
+      - arm64
+    goamd64:
+      - v1
+    ignore:
+      - goos: windows
+        goarch: arm64
+    prebuilt:
+      path: output/networkscan_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/networkscan
+    binary: networkscan
 
 release:
   extra_files:
