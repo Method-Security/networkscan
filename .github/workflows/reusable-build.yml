@@ -197,9 +197,12 @@ jobs:
         run: |
           mkdir -p output
           mv artifacts/linux-dist/* output/
-          mv artifacts/darwin_* output/
-          mv artifacts/windows_* output/
+          mv artifacts/macos-latest-dist/* output/
+          mv artifacts/windows-latest-dist/* output/
         shell: bash
+
+      - name: View Output
+        run: ls -al output
 
       # release
       - uses: goreleaser/goreleaser-action@v4
