@@ -37,7 +37,6 @@ builds:
       - darwin
     goarch:
       - arm64
-      - amd64
     goarm:
       - "7"
   - id: build-windows
