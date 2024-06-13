@@ -189,10 +189,6 @@ jobs:
         with:
           path: output
 
-      - shell: bash
-        run: |
-          ls -l dist output
-
       # release
       - uses: goreleaser/goreleaser-action@v4
         if: steps.cache.outputs.cache-hit != 'true'
