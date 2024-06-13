@@ -124,7 +124,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: ${{ matrix.os }}-dist
           path: dist/
           retention-days: 7
 
