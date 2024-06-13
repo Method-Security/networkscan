@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"github.com/Method-Security/networkscan/internal/portscan"
 	"github.com/spf13/cobra"
-	"gitlab.com/method-security/cyber-tools/networkscan/internal/portscan"
 )
 
 func (a *NetworkScan) InitPortscanCommand() {

@@ -203,13 +203,6 @@ jobs:
       - name: View Output
         run: ls -al output output/*
 
-      - name: Upload Output for Debugging
-        uses: actions/upload-artifact@v4
-        with:
-          name: output
-          path: output/
-          retention-days: 1
-
       # release
       - uses: goreleaser/goreleaser-action@v4
         if: steps.cache.outputs.cache-hit != 'true'

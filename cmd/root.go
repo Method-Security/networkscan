@@ -5,12 +5,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Method-Security/networkscan/internal/config"
 	"github.com/Method-Security/pkg/signal"
 	"github.com/Method-Security/pkg/writer"
 	"github.com/palantir/pkg/datetime"
 	"github.com/palantir/witchcraft-go-logging/wlog/svclog/svc1log"
 	"github.com/spf13/cobra"
-	"gitlab.com/method-security/cyber-tools/networkscan/internal/config"
 )
 
 type NetworkScan struct {

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"gitlab.com/method-security/cyber-tools/networkscan/cmd"
+	"github.com/Method-Security/networkscan/cmd"
 )
 
 var version = "none"
