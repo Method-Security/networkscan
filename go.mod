@@ -1,4 +1,4 @@
-module gitlab.com/method-security/cyber-tools/networkscan
+module github.com/Method-Security/networkscan
 
 go 1.22
 
