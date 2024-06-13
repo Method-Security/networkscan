@@ -4,7 +4,11 @@ ARG GORELEASER_VERSION="v2.0.1"
 ARG CLI_NAME="networkscan"
 ARG TARGETARCH
 
-RUN apk add --no-cache git gcc build-base libpcap-dev bash wget && mkdir -p /app/${CLI_NAME}
+RUN \
+  apk add --no-cache git gcc build-base libpcap-dev bash wget && \
+  mkdir -p /app/${CLI_NAME} && \
+  git config --global --add safe.directory /app/${CLI_NAME}
+
 WORKDIR /app/${CLI_NAME}
 
 FROM base as amd64
