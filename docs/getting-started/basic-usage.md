@@ -7,7 +7,7 @@ Running as a binary allows you to skip dealing with any container related networ
 You can validate that the binary is working by scanning the publicly available `scanme.sh`.
 
 ```bash
-portscan --topports 100 --target scanme.sh
+networkscan portscan --topports 100 --target scanme.sh
 ```
 
 ## Docker
