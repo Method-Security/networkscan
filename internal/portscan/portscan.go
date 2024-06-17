@@ -1,3 +1,4 @@
+// Package portscan provides the data structures and logic necessary for conducting a port scan on a target host.
 package portscan
 
 import (
@@ -8,17 +9,21 @@ import (
 	"github.com/projectdiscovery/naabu/v2/pkg/runner"
 )
 
+// PortsReport represents a singular instance of a port that was scanned and found to be open on a target host.
 type PortsReport struct {
 	Port     int    `json:"port" yaml:"port"`
 	Protocol string `json:"protocol" yaml:"protocol"`
 }
 
+// HostReport represents a singular instance of a host that was scanned and found to have open ports.
 type HostReport struct {
 	Host  string        `json:"host" yaml:"host"`
 	IP    string        `json:"ip" yaml:"ip"`
 	Ports []PortsReport `json:"ports" yaml:"ports"`
 }
 
+// Report represents the final output of a port scan, including all hosts that were scanned and their open ports.
+// It includes all of the hosts that were scanned alongside any non-fatal errors that were encountered during the scan.
 type Report struct {
 	Hosts  []HostReport `json:"hosts" yaml:"hosts"`
 	Errors []string     `json:"errors" yaml:"errors"`
@@ -74,6 +79,8 @@ func parseResult(result result.HostResult) HostReport {
 	}
 }
 
+// RunPortscan takes a target host and a list of ports to scan and returns a report of all hosts that were scanned and
+// their open ports.
 func RunPortscan(ctx context.Context, target string, ports string, topport string) (Report, error) {
 	errors := []string{}
 

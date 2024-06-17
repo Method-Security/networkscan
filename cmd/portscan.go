@@ -5,6 +5,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// InitPortscanCommand initializes the portscan command for the networkscan CLI. This function sets up the portscan command
+// for the CLI. It also sets up the flags for the portscan command, such as the target, ports, and topports.
 func (a *NetworkScan) InitPortscanCommand() {
 	portscanCmd := &cobra.Command{
 		Use:   "portscan",
