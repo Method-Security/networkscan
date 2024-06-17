@@ -50,6 +50,8 @@ dockers:
   - image_templates:
       - "ghcr.io/method-security/networkscan:{{ .Version }}-amd64"
       - "ghcr.io/method-security/networkscan:latest-amd64"
+      - "docker.io/methodsecurity/networkscan:{{ .Version }}-amd64"
+      - "docker.io/methodsecurity/networkscan:latest-amd64"
     use: buildx
     goos: linux
     goarch: amd64
@@ -69,6 +71,8 @@ dockers:
   - image_templates:
       - "ghcr.io/method-security/networkscan:{{ .Version }}-arm64"
       - "ghcr.io/method-security/networkscan:latest-arm64"
+      - "docker.io/methodsecurity/networkscan:{{ .Version }}-arm64"
+      - "docker.io/methodsecurity/networkscan:latest-arm64"
     use: buildx
     goos: linux
     goarch: arm64
@@ -91,6 +95,18 @@ docker_manifests:
     image_templates:
     - 'ghcr.io/method-security/networkscan:{{ .Version }}-amd64'
     - 'ghcr.io/method-security/networkscan:{{ .Version }}-arm64'
+  - name_template: 'ghcr.io/method-security/networkscan:latest'
+    image_templates:
+    - 'ghcr.io/method-security/networkscan:{{ .Version }}-amd64'
+    - 'ghcr.io/method-security/networkscan:{{ .Version }}-arm64'
+  - name_template: 'methodsecurity/networkscan:{{ .Version }}'
+    image_templates:
+    - 'docker.io/methodsecurity/networkscan:{{ .Version }}-amd64'
+    - 'docker.io/methodsecurity/networkscan:{{ .Version }}-arm64'
+  - name_template: 'methodsecurity/networkscan:latest'
+    image_templates:
+    - 'docker.io/methodsecurity/networkscan:{{ .Version }}-amd64'
+    - 'docker.io/methodsecurity/networkscan:{{ .Version }}-arm64'
 
 sboms:
   - artifacts: archive
