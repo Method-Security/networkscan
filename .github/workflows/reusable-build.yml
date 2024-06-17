@@ -77,7 +77,7 @@ jobs:
       - name: Install Dependencies
         run: |
           brew update
-          brew install libpcap
+          brew install libpcap docker
           echo "LD_LIBRARY_PATH=$(brew --prefix)/Cellar/libpcap/*/lib" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
 
