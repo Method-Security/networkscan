@@ -1,36 +1,72 @@
-# networkscan
+<div align="center">
+<h1>networkscan</h1>
 
-networkscan provides a number of granular network enumeration capabilities that can be leveraged by security teams to gain better visibility into both on-prem and cloud environments.
+[![GitHub Release][release-img]][release]
+[![Verify][verify-img]][verify]
+[![Go Report Card][go-report-img]][go-report]
+[![License: Apache-2.0][license-img]][license]
 
-## Development
+[![GitHub Downloads][github-downloads-img]][release]
+[![Docker Pulls][docker-pulls-img]][docker-pull]
 
-networkscan leverages Palantir's [godel](https://github.com/palantir/godel) build tool to provide streamlined Go build infrastructure. After cloning this repository, you can run `./godelw build` to build the project from source.
+</div>
 
-### Adding a new Enumeration Capability
+networkscan offers security teams a data-rich network scanning and enumeration techniques to help them gain visibility into all of their cloud and on-premise environments. Designed with data-modeling and data-integration needs in mind, networkscan can be used on its own as an interactive CLI, orchestrated as part of a broader data pipeline, or leveraged from within the Method Platform.
 
-#### New Resource Type
+The types of scans that networkscan can conduct are constantly growing. For the most up to date listing, please see the documentation [here](./docs/index.md)
 
-If you are adding a new network resource type to networkscan, you should add it as a new top level command that will get nested under the networkscan root command. To do this, you will do the following:
+To learn more about networkscan, please see the [Documentation site](https://method-security.github.io/networkscan/) for the most detailed information.
 
-1. Add a file to `cmd/` that corresponds to the sub-command name you'd like to add to the `networkscan` CLI
-2. You can use `cmd/ec2.go` as a template
-3. Your file needs to be a member function of the `networkscan` struct and should be of the form `Init<cmd>Command`
-4. Add a new member to the `networkscan` struct in `cmd/root.go` that corresponds to your command name.
-5. Call your `Init` function from `main.go`
-6. Add logic to your commands runtime and put it in its own package within `internal` (e.g., `internal/ec2`)
+## Quick Start
 
-## Testing
+### Get networkscan
 
-### Testing from Source (pre-build)
+For the full list of available installation options, please see the [Installation](./getting-started/installation.md) page. For convenience, here are some of the most commonly used options:
 
-You can test locally without building by running
+- `docker run methodsecurity/networkscan`
+- `docker run ghcr.io/method-security/networkscan`
+- Download the latest binary from the [Github Releases](https://github.com/Method-Security/networkscan/releases/latest) page
+- [Installation documentation](./getting-started/installation.md)
+
+### General Usage
 
 ```bash
-go run main.go <subcommand> <flags>
+networkscan portscan <target>
 ```
 
-### Testing the CLI (post-build)
+#### Examples
 
-You can test locally using the CLI by building it from source. Run, `./godelw clean && ./godelw build` to clean out the `out/` directory and rebuild. You will now have a binary at `out/build/networkscan/<version>/<architecture>/networkscan` that you can run
+```bash
+networkscan portscan --topports 100 scanme.sh
+```
 
-The majority of networkscan commands will require authentication with an AWS account, so you will need to have the appropriate [AWS Credentials exported as environment variables](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html).
+## Contributing
+
+Interested in contributing to networkscan? Please see our organization wide [Contribution](https://method-security.github.io/community/contribute/discussions.html) page.
+
+## Want More?
+
+If you're looking for an easy way to tie networkscan into your broader cybersecurity workflows, or want to leverage some autonomy to improve your overall security posture, you'll love the broader Method Platform.
+
+For more information, visit us [here](https://method.security)
+
+## Community
+
+networkscan is a Method Security open source project.
+
+Learn more about Method's open source source work by checking out our other projects [here](https://github.com/Method-Security) or our organization wide documentation [here](https://method-security.github.io).
+
+Have an idea for a Tool to contribute? Open a Discussion [here](https://github.com/Method-Security/Method-Security.github.io/discussions).
+
+[verify]: https://github.com/Method-Security/networkscan/actions/workflows/verify.yml
+[verify-img]: https://github.com/Method-Security/networkscan/actions/workflows/verify.yml/badge.svg
+[go-report]: https://goreportcard.com/report/github.com/Method-Security/networkscan
+[go-report-img]: https://goreportcard.com/badge/github.com/Method-Security/networkscan
+[release]: https://github.com/Method-Security/networkscan/releases
+[releases]: https://github.com/Method-Security/networkscan/releases/latest
+[release-img]: https://img.shields.io/github/release/Method-Security/networkscan.svg?logo=github
+[github-downloads-img]: https://img.shields.io/github/downloads/Method-Security/networkscan/total?logo=github
+[docker-pulls-img]: https://img.shields.io/docker/pulls/methodsecurity/networkscan?logo=docker&label=docker%20pulls%20%2F%20networkscan
+[docker-pull]: https://hub.docker.com/r/methodsecurity/networkscan
+[license]: https://github.com/Method-Security/networkscan/blob/main/LICENSE
+[license-img]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
