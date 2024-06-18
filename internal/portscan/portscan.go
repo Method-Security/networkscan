@@ -33,6 +33,9 @@ func getPortScan(ctx context.Context, target string, ports string, topports stri
 	output := result.HostResult{}
 	hostReports := []HostReport{}
 	portscanOpts := &runner.Options{
+		Silent:            true,
+		JSON:              true,
+		NoColor:           true,
 		Threads:           10,
 		Timeout:           runner.DefaultPortTimeoutSynScan,
 		Host:              goflags.StringSlice{target},
