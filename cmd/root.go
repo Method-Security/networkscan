@@ -21,13 +21,11 @@ import (
 // is used by subcommands. The Output Signal is used to write the output of the command to the desired output format
 // after the execution of the invoked command's Run function.
 type NetworkScan struct {
-	Version      string
-	RootFlags    config.RootFlags
-	OutputConfig writer.OutputConfig
-	OutputSignal signal.Signal
-	RootCmd      *cobra.Command
-	VersionCmd   *cobra.Command
-	PortscanCmd  *cobra.Command
+	Version      		string
+	RootFlags    		config.RootFlags
+	OutputConfig 		writer.OutputConfig
+	OutputSignal 		signal.Signal
+	RootCmd      		*cobra.Command
 }
 
 // NewNetworkScan creates a new NetworkScan struct with the provided version string. The NetworkScan struct is used to
@@ -93,7 +91,7 @@ func (a *NetworkScan) InitRootCommand() {
 	a.RootCmd.PersistentFlags().StringVarP(&outputFile, "output-file", "f", "", "Path to output file. If blank, will output to STDOUT")
 	a.RootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "signal", "Output format (signal, json, yaml). Default value is signal")
 
-	a.VersionCmd = &cobra.Command{
+	versionCmd := &cobra.Command{
 		Use:   "version",
 		Short: "Prints the version number of networkscan",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
@@ -107,7 +105,7 @@ func (a *NetworkScan) InitRootCommand() {
 		},
 	}
 
-	a.RootCmd.AddCommand(a.VersionCmd)
+	a.RootCmd.AddCommand(versionCmd)
 }
 
 func validateOutputFormat(output string) (writer.Format, error) {
