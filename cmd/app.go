@@ -21,14 +21,6 @@ func (a *NetworkScan) InitAppCommand() {
 		Short: "Detect the apps and services on a target host",
 		Long:  `Detect the apps and services on a target host`,
 		Run: func(cmd *cobra.Command, args []string) {
-			// osdetect can only be run as a sudoer or privileged user
-			/* if !privileges.IsPrivileged {
-				errorMessage := "os detect can only be run as a privileged user"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			} */
-
 			// Check if nmap is installed and in the system path
 			_, err := exec.LookPath("nmap")
 			if err != nil {
