@@ -14,7 +14,10 @@ nav:
   - Docs:
       - Overview: docs/index.md
       - Capabilities:
-        - Portscan: docs/portscan.md
+        - Port: docs/port.md
+        - Host: docs/host.md
+        - OS: docs/os.md
+        - App: docs/app.md
   - Contributing:
       - How to contribute: community/community.md
       - Development:
