@@ -6,6 +6,7 @@ toolchain go1.22.4
 
 require (
 	github.com/Method-Security/pkg v0.0.2
+	github.com/Ullaakut/nmap/v3 v3.0.3
 	github.com/palantir/pkg/datetime v1.1.0
 	github.com/palantir/witchcraft-go-logging v1.51.0
 	github.com/projectdiscovery/goflags v0.1.51
@@ -129,6 +130,7 @@ require (
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
+	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/term v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect

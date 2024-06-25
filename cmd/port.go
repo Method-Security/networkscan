@@ -1,17 +1,23 @@
 package cmd
 
 import (
-	"github.com/Method-Security/networkscan/internal/portscan"
+	"github.com/Method-Security/networkscan/internal/port"
 	"github.com/spf13/cobra"
 )
 
-// InitPortscanCommand initializes the portscan command for the networkscan CLI. This function sets up the portscan command
-// for the CLI. It also sets up the flags for the portscan command, such as the target, ports, and topports.
-func (a *NetworkScan) InitPortscanCommand() {
-	portscanCmd := &cobra.Command{
-		Use:   "portscan",
-		Short: "Scan for open ports",
-		Long:  `Scan for open ports`,
+// InitPortCommand initializes the port command for the networkscan CLI. It also sets up the flags for the port
+// command and its subcommands.
+func (a *NetworkScan) InitPortCommand() {
+	portCmd := &cobra.Command{
+		Use:   "port",
+		Short: "Scan and interact with ports on a network",
+		Long:  "Scan and interact with ports on a network",
+	}
+
+	portScanCmd := &cobra.Command{
+		Use:   "scan",
+		Short: "Scan for open ports on a target host",
+		Long:  `Scan for open ports on a target host`,
 		Run: func(cmd *cobra.Command, args []string) {
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
@@ -40,7 +46,7 @@ func (a *NetworkScan) InitPortscanCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
-			report, err := portscan.RunPortscan(cmd.Context(), target, ports, topport)
+			report, err := port.RunPortScan(cmd.Context(), target, ports, topport)
 			if err != nil {
 				errorMessage := err.Error()
 				a.OutputSignal.ErrorMessage = &errorMessage
@@ -51,8 +57,10 @@ func (a *NetworkScan) InitPortscanCommand() {
 		},
 	}
 
-	portscanCmd.Flags().String("target", "", "Target IP to scan on")
-	portscanCmd.Flags().String("ports", "", "Port/Port Range to scan")
-	portscanCmd.Flags().String("topports", "", "Top Ports to scan [full,100,1000]")
-	a.RootCmd.AddCommand(portscanCmd)
+	portScanCmd.Flags().String("target", "", "Target IP or FQDN to scan for ports")
+	portScanCmd.Flags().String("ports", "", "Port/Port Range to scan")
+	portScanCmd.Flags().String("topports", "", "Top Ports to scan (full | 100 |1000)")
+
+	portCmd.AddCommand(portScanCmd)
+	a.RootCmd.AddCommand(portCmd)
 }
