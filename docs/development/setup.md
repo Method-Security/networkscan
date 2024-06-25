@@ -32,6 +32,27 @@ If you'd like to clean this output up, you can run
 ./godelw clean
 ```
 
+## Compile and Run in single step
+
+If you are developing a new command or subcommand, and want to test, you can run with:
+
+```bash
+go run main.go <command>
+```
+
+For example, the following commands would be the same, but the former requires building the CLI first:
+
+```bash
+networkscan port scan --target scanme.sh
+go run main.go port scan --target scanme.sh
+```
+
+If you are dealing with a command or subcommand that requires a privileged user to run, on a Unix based machine a quick way to do this is:
+
+```bash
+sudo $(which go) run main.go host discover --target 192.168.0.0/24
+```
+
 ## Testing releases locally
 
 We can use goreleaser locally as well to test our builds. As networkscan uses [cosign](https://github.com/sigstore/cosign) to sign our artifacts and Docker containers during our CI pipeline, we'll want to skip this step when running locally.

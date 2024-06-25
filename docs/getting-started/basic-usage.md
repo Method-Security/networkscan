@@ -7,7 +7,7 @@ Running as a binary allows you to skip dealing with any container related networ
 You can validate that the binary is working by scanning the publicly available `scanme.sh`.
 
 ```bash
-networkscan portscan --topports 100 --target scanme.sh
+networkscan port scan --topports 100 --target scanme.sh
 ```
 
 ## Docker
@@ -18,7 +18,7 @@ If you're running on a Docker container on a MacOS machine and you are trying to
 
 ```bash
 docker run ghcr.io/method-security/networkscan \
-  portscan \
+  port scan \
   --topports 100 \
   --target scanme.sh
 ```

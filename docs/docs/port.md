@@ -1,24 +1,26 @@
-# Portscan
+# Port
 
-The `networkscan portscan` command provide information about ports that are open across networked devices.
+The `networkscan port scan` command provide information about ports that are open across networked devices.
 
 ## Usage
 
+To scan for ports on a target host:
 ```bash
-portscan --topports 100 --target scanme.sh
+networkscan port scan --topports 100 --target scanme.sh
 ```
 
-## Help Test
+## Help
 
 ```bash
-networkscan portscan -h
-Scan for open ports
+networkscan port scan -h
+
+Scan for open ports on a target host
 
 Usage:
-  networkscan portscan [flags]
+  networkscan port scan [flags]
 
 Flags:
-  -h, --help              help for portscan
+  -h, --help              help for scan
       --ports string      Port/Port Range to scan
       --target string     Target IP to scan on
       --topports string   Top Ports to scan [full,100,1000]

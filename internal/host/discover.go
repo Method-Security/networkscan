@@ -1,5 +1,5 @@
-// Package hostdiscover provides the data structures and logic necessary for conducting host discovery on a network
-package hostdiscover
+// Package host provides the data structures and logic necessary for interacting with hosts on a network.
+package host
 
 import (
 	"context"
@@ -10,36 +10,39 @@ import (
 	"github.com/projectdiscovery/naabu/v2/pkg/runner"
 )
 
-// HostReport represents a singular instance of a host that was scanned
-type HostReport struct {
-	Host  string        `json:"host" yaml:"host"`
-	IP    string        `json:"ip" yaml:"ip"`
+// Details represents a singular instance of a host that was scanned
+type Details struct {
+	Host string `json:"host" yaml:"host"`
+	IP   string `json:"ip" yaml:"ip"`
 }
 
 // Report represents the final output of a hostdiscover scan, including all hosts that were scanned.
 // It includes all of the hosts that were scanned alongside any non-fatal errors that were encountered during the scan.
 type Report struct {
-	Hosts  []HostReport `json:"hosts" yaml:"hosts"`
-	Errors []string     `json:"errors" yaml:"errors"`
+	Hosts  []Details `json:"hosts" yaml:"hosts"`
+	Errors []string  `json:"errors" yaml:"errors"`
 }
 
-func getHostDiscover(ctx context.Context, target string, scantype string) ([]HostReport, error) {
-	output := result.HostResult{}
-	hostReports := []HostReport{}
+func getHostDiscover(ctx context.Context, target string, scantype string) ([]Details, error) {
+	hostDetails := []Details{}
 	hostDiscoverOpts := &runner.Options{
 		Silent:            true,
 		JSON:              true,
 		NoColor:           true,
-		Retries: 		   3,
-		WarmUpTime: 	   2,
-		Rate: 			   1000,
+		Retries:           3,
+		WarmUpTime:        2,
+		Rate:              1000,
 		Threads:           25,
+		PortThreshold:     0,
+		StatsInterval:     5,
 		Timeout:           runner.DefaultPortTimeoutSynScan,
 		Host:              goflags.StringSlice{target},
 		OnlyHostDiscovery: true,
+		SkipHostDiscovery: false,
+		InputReadTimeout:  3,
+		ScanType:          "s",
 		OnResult: func(hr *result.HostResult) {
-			output = *hr
-			hostReports = append(hostReports, parseResult(output))
+			hostDetails = append(hostDetails, parseResult(*hr))
 		},
 	}
 
@@ -57,28 +60,28 @@ func getHostDiscover(ctx context.Context, target string, scantype string) ([]Hos
 	case "icmpaddressmask":
 		hostDiscoverOpts.IcmpAddressMaskRequestProbe = true
 	default:
-		fmt.Print("Unrecognized scantype")
+		fmt.Print("No valid scantype provided")
 	}
 
 	hostdiscover, err := runner.NewRunner(hostDiscoverOpts)
 	if err != nil {
-		return hostReports, err
+		return hostDetails, err
 	}
 
 	defer hostdiscover.Close()
 	err = hostdiscover.RunEnumeration(ctx)
 	if err != nil {
-		return hostReports, err
+		return hostDetails, err
 	}
 
-	return hostReports, nil
+	return hostDetails, nil
 
 }
 
-func parseResult(result result.HostResult) HostReport {
-	return HostReport{
-		Host:  result.Host,
-		IP:    result.IP,
+func parseResult(result result.HostResult) Details {
+	return Details{
+		Host: result.Host,
+		IP:   result.IP,
 	}
 }
 

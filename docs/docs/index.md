@@ -2,7 +2,10 @@
 
 networkscan offers a variety of scanning techniques to security teams working across all cloud providers and on-premise environments. Each of the below pages offers you an in depth look at a networkscan capability related to a unique scanning technique.
 
-- [Portscan](./portscan.md)
+- [Port](./port.md)
+- [Host](./host.md)
+- [OS](./os.md)
+- [App](./app.md)
 
 ## Top Level Flags
 

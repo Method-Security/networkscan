@@ -21,11 +21,11 @@ import (
 // is used by subcommands. The Output Signal is used to write the output of the command to the desired output format
 // after the execution of the invoked command's Run function.
 type NetworkScan struct {
-	Version      		string
-	RootFlags    		config.RootFlags
-	OutputConfig 		writer.OutputConfig
-	OutputSignal 		signal.Signal
-	RootCmd      		*cobra.Command
+	Version      string
+	RootFlags    config.RootFlags
+	OutputConfig writer.OutputConfig
+	OutputSignal signal.Signal
+	RootCmd      *cobra.Command
 }
 
 // NewNetworkScan creates a new NetworkScan struct with the provided version string. The NetworkScan struct is used to
