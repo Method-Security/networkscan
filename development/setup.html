@@ -549,11 +549,74 @@
   
   
     <li class="md-nav__item">
-      <a href="../docs/portscan.html" class="md-nav__link">
+      <a href="../docs/port.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Portscan
+    Port
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/host.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Host
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/os.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/app.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App
   </span>
   
 
@@ -769,6 +832,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#compile-and-run-in-single-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compile and Run in single step
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing-releases-locally" class="md-nav__link">
     <span class="md-ellipsis">
       Testing releases locally
@@ -897,6 +969,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#compile-and-run-in-single-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compile and Run in single step
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing-releases-locally" class="md-nav__link">
     <span class="md-ellipsis">
       Testing releases locally
@@ -944,6 +1025,17 @@
 <p>You should see output in <code>out/build/networkscan/&lt;version&gt;/&lt;os&gt;-&lt;arch&gt;/networkscan</code>.</p>
 <p>If you'd like to clean this output up, you can run</p>
 <div class="highlight"><pre><span></span><code>./godelw<span class="w"> </span>clean
+</code></pre></div>
+<h2 id="compile-and-run-in-single-step">Compile and Run in single step<a class="headerlink" href="#compile-and-run-in-single-step" title="Permanent link">#</a></h2>
+<p>If you are developing a new command or subcommand, and want to test, you can run with:</p>
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>run<span class="w"> </span>main.go<span class="w"> </span>&lt;command&gt;
+</code></pre></div>
+<p>For example, the following commands would be the same, but the former requires building the CLI first:</p>
+<div class="highlight"><pre><span></span><code>networkscan<span class="w"> </span>port<span class="w"> </span>scan<span class="w"> </span>--target<span class="w"> </span>scanme.sh
+go<span class="w"> </span>run<span class="w"> </span>main.go<span class="w"> </span>port<span class="w"> </span>scan<span class="w"> </span>--target<span class="w"> </span>scanme.sh
+</code></pre></div>
+<p>If you are dealing with a command or subcommand that requires a privileged user to run, on a Unix based machine a quick way to do this is:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>go<span class="k">)</span><span class="w"> </span>run<span class="w"> </span>main.go<span class="w"> </span>host<span class="w"> </span>discover<span class="w"> </span>--target<span class="w"> </span><span class="m">192</span>.168.0.0/24
 </code></pre></div>
 <h2 id="testing-releases-locally">Testing releases locally<a class="headerlink" href="#testing-releases-locally" title="Permanent link">#</a></h2>
 <p>We can use goreleaser locally as well to test our builds. As networkscan uses <a href="https://github.com/sigstore/cosign">cosign</a> to sign our artifacts and Docker containers during our CI pipeline, we'll want to skip this step when running locally.</p>

@@ -547,11 +547,74 @@
   
   
     <li class="md-nav__item">
-      <a href="../docs/portscan.html" class="md-nav__link">
+      <a href="../docs/port.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Portscan
+    Port
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/host.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Host
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/os.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/app.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App
   </span>
   
 
@@ -820,11 +883,11 @@
 <p>By design, networkscan breaks every unique network scan into its own top level command. If you are looking to add a brand new capability to the tool, you can take the following steps.</p>
 <ol>
 <li>Add a file to <code>cmd/</code> that corresponds to the sub-command name you'd like to add to the <code>networkscan</code> CLI</li>
-<li>You can use <code>cmd/portscan.go</code> as a template</li>
+<li>You can use <code>cmd/port.go</code> as a template</li>
 <li>Your file needs to be a member function of the <code>networkscan</code> struct and should be of the form <code>Init&lt;cmd&gt;Command</code></li>
 <li>Add a new member to the <code>networkscan</code> struct in <code>cmd/root.go</code> that corresponsds to your command name. Remember, the first letter must be capitalized.</li>
 <li>Call your <code>Init</code> function from <code>main.go</code></li>
-<li>Add logic to your commands runtime and put it in its own package within <code>internal</code> (e.g., <code>internal/portscan</code>)</li>
+<li>Add logic to your commands runtime and put it in its own package within <code>internal</code> (e.g., <code>internal/port</code>)</li>
 </ol>
 
 
