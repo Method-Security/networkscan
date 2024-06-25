@@ -11,13 +11,11 @@ import (
 // Report represents the final output of a hostdiscover scan, including all hosts that were scanned.
 // It includes all of the hosts that were scanned alongside any non-fatal errors that were encountered during the scan.
 type Report struct {
-	Hosts  []nmap.Host `json:"hosts" yaml:"hosts"`
-	Errors []string    `json:"errors" yaml:"errors"`
+	Run    nmap.Run `json:"run" yaml:"run"`
+	Errors []string `json:"errors" yaml:"errors"`
 }
 
-func getAppDetect(ctx context.Context, target string, ports string) ([]nmap.Host, error) {
-	hostReports := []nmap.Host{}
-
+func getAppDetect(ctx context.Context, target string, ports string) (nmap.Run, error) {
 	scanner, err := nmap.NewScanner(
 		ctx,
 		nmap.WithTargets(target),
@@ -31,7 +29,7 @@ func getAppDetect(ctx context.Context, target string, ports string) ([]nmap.Host
 	}
 
 	if err != nil {
-		return hostReports, err
+		return nmap.Run{}, err
 	}
 
 	result, warnings, err := scanner.Run()
@@ -39,14 +37,10 @@ func getAppDetect(ctx context.Context, target string, ports string) ([]nmap.Host
 		fmt.Printf("run finished with warnings: %s\n", *warnings) // Warnings are non-critical errors from nmap.
 	}
 	if err != nil {
-		return hostReports, err
+		return nmap.Run{}, err
 	}
 
-	for _, host := range result.Hosts {
-		hostReports = append(hostReports, host)
-	}
-
-	return hostReports, nil
+	return *result, nil
 
 }
 
@@ -60,7 +54,7 @@ func RunAppDetect(ctx context.Context, target string, ports string) (Report, err
 	}
 
 	return Report{
-		Hosts:  osDetectResult,
+		Run:    osDetectResult,
 		Errors: errors,
 	}, nil
 }
