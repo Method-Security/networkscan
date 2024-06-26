@@ -23,12 +23,15 @@ COPY ${CLI_NAME} /opt/method/${CLI_NAME}/service/bin/${CLI_NAME}
 RUN \
   adduser --disabled-password --gecos '' method && \
   echo "method ALL=(ALL) NOPASSWD: /usr/bin/nmap" > /etc/sudoers.d/method && \
+  echo "method ALL=(ALL) NOPASSWD: /opt/method/networkscan/service/bin/networkscan" >> /etc/sudoers.d/method && \
+  chmod 440 /etc/sudoers.d/method && \
   chown -R method:method /opt/method/${CLI_NAME}/ && \
-  chown -R method:method /mnt/output
+  chown -R method:method /mnt/output && \
+  chmod +x /opt/method/${CLI_NAME}/service/bin/${CLI_NAME}
 
 USER method
 
 WORKDIR /opt/method/${CLI_NAME}/
 
 ENV PATH="/opt/method/${CLI_NAME}/service/bin:${PATH}"
-ENTRYPOINT [ "networkscan" ]
+ENTRYPOINT [ "sudo", "networkscan" ]
