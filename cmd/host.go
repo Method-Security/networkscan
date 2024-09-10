@@ -64,4 +64,39 @@ func (a *NetworkScan) InitHostCommand() {
 
 	hostCmd.AddCommand(hostDiscoverCmd)
 	a.RootCmd.AddCommand(hostCmd)
+
+	hostBannerGrabCmd := &cobra.Command{
+		Use:   "banner-grab",
+		Short: "Grab banner from a host",
+		Long:  `Grab banner from a host using a socket-based address`,
+		Run: func(cmd *cobra.Command, args []string) {
+			target, err := cmd.Flags().GetString("target")
+			if err != nil {
+				errorMessage := err.Error()
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+			if target == "" {
+				errorMessage := "target is required"
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+
+			report, err := host.RunHostBannerGrab(cmd.Context(), target)
+			if err != nil {
+				errorMessage := err.Error()
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+			a.OutputSignal.Content = report
+		},
+	}
+
+	hostBannerGrabCmd.Flags().String("target", "", "Target socket-based address (e.g., 192.168.1.1:80)")
+
+	hostCmd.AddCommand(hostBannerGrabCmd)
+	a.RootCmd.AddCommand(hostCmd)
 }

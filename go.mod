@@ -9,6 +9,7 @@ require (
 	github.com/Ullaakut/nmap/v3 v3.0.3
 	github.com/palantir/pkg/datetime v1.1.0
 	github.com/palantir/witchcraft-go-logging v1.51.0
+	github.com/praetorian-inc/fingerprintx v1.1.14
 	github.com/projectdiscovery/goflags v0.1.51
 	github.com/projectdiscovery/naabu/v2 v2.3.1
 	github.com/spf13/cobra v1.8.0
@@ -94,6 +95,7 @@ require (
 	github.com/projectdiscovery/retryablehttp-go v1.0.58 // indirect
 	github.com/projectdiscovery/uncover v1.0.7 // indirect
 	github.com/projectdiscovery/utils v0.0.92 // indirect
+	github.com/projectdiscovery/wappalyzergo v0.0.77 // indirect
 	github.com/quic-go/quic-go v0.42.0 // indirect
 	github.com/refraction-networking/utls v1.5.4 // indirect
 	github.com/remeh/sizedwaitgroup v1.0.0 // indirect
