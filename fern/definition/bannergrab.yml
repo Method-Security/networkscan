@@ -1,0 +1,28 @@
+imports:
+  common: ./common.yml
+types:
+  CookieInfo:
+    properties:
+      data: string
+      expiration: datetime
+      samesite: boolean
+  BannerGrab:
+    properties:
+      host: string
+      ip: string
+      port: integer
+      statusCode: optional<string>
+      transport: common.TransportType
+      service: common.ServiceType
+      tls: boolean
+      version:  string
+      connection: optional<string>
+      contentType: optional<string>
+      sameSite: optional<common.SameSiteType>
+      technologies: optional<list<string>>
+      metadata: optional<map<string, string>>
+  BannerGrabReport:
+    properties:
+      target: string
+      bannerGrabs: optional<list<BannerGrab>>
+      errors: optional<list<string>>

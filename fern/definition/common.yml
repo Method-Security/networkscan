@@ -1,0 +1,51 @@
+types:
+  TransportType:
+    enum:
+      - TCP
+      - UDP
+      - UNKNOWN
+  ServiceType:
+    enum:
+      - HTTP
+      - HTTPS
+      - FTP
+      - SFTP
+      - SSH
+      - TELNET
+      - SMTP
+      - SMTPS
+      - POP3
+      - POP3S
+      - IMAP
+      - IMAPS
+      - DNS
+      - SNMP
+      - KAFKA
+      - MQTT3
+      - MQTT5
+      - RDP
+      - REDIS
+      - LDAP
+      - LDAPS
+      - RSYNC
+      - RPC
+      - POSTGRESSQL
+      - MYSQL
+      - MSSQL
+      - ORACLEDB
+      - VNC
+      - MODBUS
+      - SMB
+      - IPSEC
+      - STUN
+      - RTSP
+      - DHCP
+      - NTP
+      - OPENVPN
+      - UNKNOWN
+  SameSiteType:
+    enum:
+      - NONE
+      - LAX
+      - STRICT
+      - UNKNOWN

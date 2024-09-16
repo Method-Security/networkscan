@@ -66,7 +66,7 @@ func (a *NetworkScan) InitHostCommand() {
 	a.RootCmd.AddCommand(hostCmd)
 
 	hostBannerGrabCmd := &cobra.Command{
-		Use:   "banner-grab",
+		Use:   "bannergrab",
 		Short: "Grab banner from a host",
 		Long:  `Grab banner from a host using a socket-based address`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -77,6 +77,14 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
+			timeout, err := cmd.Flags().GetInt("timeout")
+			if err != nil {
+				errorMessage := err.Error()
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+
 			if target == "" {
 				errorMessage := "target is required"
 				a.OutputSignal.ErrorMessage = &errorMessage
@@ -84,7 +92,7 @@ func (a *NetworkScan) InitHostCommand() {
 				return
 			}
 
-			report, err := host.RunHostBannerGrab(cmd.Context(), target)
+			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, target)
 			if err != nil {
 				errorMessage := err.Error()
 				a.OutputSignal.ErrorMessage = &errorMessage
@@ -96,7 +104,7 @@ func (a *NetworkScan) InitHostCommand() {
 	}
 
 	hostBannerGrabCmd.Flags().String("target", "", "Target socket-based address (e.g., 192.168.1.1:80)")
-
+	hostBannerGrabCmd.Flags().Int("timeout", 30, "Timeout limit in seconds")
 	hostCmd.AddCommand(hostBannerGrabCmd)
 	a.RootCmd.AddCommand(hostCmd)
 }
