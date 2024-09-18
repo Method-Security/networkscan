@@ -52,19 +52,18 @@ func RunHostBannerGrab(ctx context.Context, timeout int, target string, port uin
 		for _, result := range results {
 			metadata := metadataMap(result.Metadata())
 			bannerResult := networkscan.BannerGrab{
-				Host:         result.Host,
-				Ip:           result.IP,
-				Port:         result.Port,
-				Tls:          result.TLS,
-				Version:      result.Version,
-				Transport:    getTransportTypeEnum(result.Transport),
-				Service:      getServiceTypeEnum(result.Protocol),
-				StatusCode:   getStatusCode(metadata),
-				Connection:   getConnectionBanner(metadata),
-				ContentType:  getContentTypeBanner(metadata),
-				SameSite:     getSamesiteEnum(metadata),
-				Technologies: getTechnologiesList(metadata),
-				Metadata:     metadata,
+				Host:        result.Host,
+				Ip:          result.IP,
+				Port:        result.Port,
+				Tls:         result.TLS,
+				Version:     result.Version,
+				Transport:   getTransportTypeEnum(result.Transport),
+				Service:     getServiceTypeEnum(result.Protocol),
+				StatusCode:  getStatusCode(metadata),
+				Connection:  getConnectionBanner(metadata),
+				ContentType: getContentTypeBanner(metadata),
+				SameSite:    getSamesiteEnum(metadata),
+				Metadata:    metadata,
 			}
 			bannerResults = append(bannerResults, &bannerResult)
 		}
@@ -126,14 +125,6 @@ func getServiceTypeEnum(protocol string) networkscan.ServiceType {
 	return serviceTypeEnum
 }
 
-func getTechnologiesList(metadata map[string]string) []string {
-	if val, ok := metadata["Technologies"]; ok {
-		techs := strings.Split(strings.Trim(val, "[]"), ",")
-		return techs
-	}
-	return nil
-}
-
 func getStatusCode(metadata map[string]string) *string {
 	if val, ok := metadata["StatusCode"]; ok {
 		return &val
@@ -152,7 +143,7 @@ func getConnectionBanner(metadata map[string]string) *string {
 
 func getContentTypeBanner(metadata map[string]string) *string {
 	if val, ok := metadata["ResponseHeaders"]; ok {
-		if connectionData, ok := unmarshalMapString(val)["Connection"]; ok {
+		if connectionData, ok := unmarshalMapString(val)["Content-Type"]; ok {
 			return &connectionData
 		}
 	}

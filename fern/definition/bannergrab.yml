@@ -19,7 +19,6 @@ types:
       connection: optional<string>
       contentType: optional<string>
       sameSite: optional<common.SameSiteType>
-      technologies: optional<list<string>>
       metadata: optional<map<string, string>>
   BannerGrabReport:
     properties:

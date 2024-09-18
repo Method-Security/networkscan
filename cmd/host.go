@@ -34,12 +34,6 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
-			if target == "" {
-				errorMessage := "target is required"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
 			scantype, err := cmd.Flags().GetString("scantype")
 			if err != nil {
 				errorMessage := err.Error()
@@ -61,7 +55,7 @@ func (a *NetworkScan) InitHostCommand() {
 
 	hostDiscoverCmd.Flags().String("target", "", "Target IP, host, or CIDR to scan for hosts")
 	hostDiscoverCmd.Flags().String("scantype", "", "Scan type for host discovery (tcpsyn | tcpack | icmpecho | icmptimestamp | arp | icmpaddressmask)")
-
+	_ = hostDiscoverCmd.MarkFlagRequired("target")
 	hostCmd.AddCommand(hostDiscoverCmd)
 	a.RootCmd.AddCommand(hostCmd)
 
@@ -77,21 +71,9 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
-			if target == "" {
-				errorMessage := "target is required"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
 			port, err := cmd.Flags().GetUint16("port")
 			if err != nil {
 				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			if port == 0 {
-				errorMessage := "port is required"
 				a.OutputSignal.ErrorMessage = &errorMessage
 				a.OutputSignal.Status = 1
 				return
@@ -118,6 +100,9 @@ func (a *NetworkScan) InitHostCommand() {
 	hostBannerGrabCmd.Flags().String("target", "", "Target address (e.g., 192.168.1.1)")
 	hostBannerGrabCmd.Flags().Uint16("port", 0, "Address Port (e.g., 443)")
 	hostBannerGrabCmd.Flags().Int("timeout", 30, "Timeout limit in seconds")
+	_ = hostBannerGrabCmd.MarkFlagRequired("target")
+	_ = hostBannerGrabCmd.MarkFlagRequired("port")
+
 	hostCmd.AddCommand(hostBannerGrabCmd)
 	a.RootCmd.AddCommand(hostCmd)
 }

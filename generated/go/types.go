@@ -10,19 +10,18 @@ import (
 )
 
 type BannerGrab struct {
-	Host         string            `json:"host" url:"host"`
-	Ip           string            `json:"ip" url:"ip"`
-	Port         int               `json:"port" url:"port"`
-	Tls          bool              `json:"tls" url:"tls"`
-	Version      string            `json:"version" url:"version"`
-	Transport    TransportType     `json:"transport" url:"transport"`
-	Service      ServiceType       `json:"service" url:"service"`
-	StatusCode   *string           `json:"statusCode,omitempty" url:"statusCode,omitempty"`
-	Connection   *string           `json:"connection,omitempty" url:"connection,omitempty"`
-	ContentType  *string           `json:"contentType,omitempty" url:"contentType,omitempty"`
-	SameSite     *SameSiteType     `json:"sameSite,omitempty" url:"sameSite,omitempty"`
-	Technologies []string          `json:"technologies,omitempty" url:"technologies,omitempty"`
-	Metadata     map[string]string `json:"metadata,omitempty" url:"metadata,omitempty"`
+	Host        string            `json:"host" url:"host"`
+	Ip          string            `json:"ip" url:"ip"`
+	Port        int               `json:"port" url:"port"`
+	Tls         bool              `json:"tls" url:"tls"`
+	Version     string            `json:"version" url:"version"`
+	Transport   TransportType     `json:"transport" url:"transport"`
+	Service     ServiceType       `json:"service" url:"service"`
+	StatusCode  *string           `json:"statusCode,omitempty" url:"statusCode,omitempty"`
+	Connection  *string           `json:"connection,omitempty" url:"connection,omitempty"`
+	ContentType *string           `json:"contentType,omitempty" url:"contentType,omitempty"`
+	SameSite    *SameSiteType     `json:"sameSite,omitempty" url:"sameSite,omitempty"`
+	Metadata    map[string]string `json:"metadata,omitempty" url:"metadata,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
