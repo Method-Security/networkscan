@@ -17,11 +17,11 @@ import (
 )
 
 // RunHostBannerGrab performs a banner grab on the specified target
-func RunHostBannerGrab(ctx context.Context, timeout int, host string, port uint64) (*networkscan.BannerGrabReport, error) {
-	resources := networkscan.BannerGrabReport{Target: host}
+func RunHostBannerGrab(ctx context.Context, timeout int, target string, port uint16) (*networkscan.BannerGrabReport, error) {
+	resources := networkscan.BannerGrabReport{Target: target}
 	errs := []string{}
 
-	ips, err := getIPs(host)
+	ips, err := getIPs(target)
 	if err != nil {
 		return &resources, err
 	}
@@ -39,8 +39,8 @@ func RunHostBannerGrab(ctx context.Context, timeout int, host string, port uint6
 			return &resources, err
 		}
 		fxTarget := plugins.Target{
-			Address: netip.AddrPortFrom(ipAddr, uint16(port)),
-			Host:    host,
+			Address: netip.AddrPortFrom(ipAddr, port),
+			Host:    target,
 		}
 		targets := []plugins.Target{fxTarget}
 

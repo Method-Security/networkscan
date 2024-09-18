@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"net"
-	"strconv"
-
 	"github.com/Method-Security/networkscan/internal/host"
 	"github.com/projectdiscovery/naabu/v2/pkg/privileges"
 	"github.com/spf13/cobra"
@@ -80,6 +77,25 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
+			if target == "" {
+				errorMessage := "target is required"
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+			port, err := cmd.Flags().GetUint16("port")
+			if err != nil {
+				errorMessage := err.Error()
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+			if port == 0 {
+				errorMessage := "port is required"
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
 			timeout, err := cmd.Flags().GetInt("timeout")
 			if err != nil {
 				errorMessage := err.Error()
@@ -87,28 +103,8 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
-			if target == "" {
-				errorMessage := "target is required"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			targetHost, portStr, err := net.SplitHostPort(target)
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			port, err := strconv.ParseUint(portStr, 10, 16)
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
 
-			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, targetHost, port)
+			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, target, port)
 			if err != nil {
 				errorMessage := err.Error()
 				a.OutputSignal.ErrorMessage = &errorMessage
@@ -119,7 +115,8 @@ func (a *NetworkScan) InitHostCommand() {
 		},
 	}
 
-	hostBannerGrabCmd.Flags().String("target", "", "Target socket-based address (e.g., 192.168.1.1:80)")
+	hostBannerGrabCmd.Flags().String("target", "", "Target address (e.g., 192.168.1.1)")
+	hostBannerGrabCmd.Flags().Uint16("port", 0, "Address Port (e.g., 443)")
 	hostBannerGrabCmd.Flags().Int("timeout", 30, "Timeout limit in seconds")
 	hostCmd.AddCommand(hostBannerGrabCmd)
 	a.RootCmd.AddCommand(hostCmd)
