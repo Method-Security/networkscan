@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"net"
+	"strconv"
+
 	"github.com/Method-Security/networkscan/internal/host"
 	"github.com/projectdiscovery/naabu/v2/pkg/privileges"
 	"github.com/spf13/cobra"
@@ -47,6 +50,7 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
+
 			report, err := host.RunHostDiscover(cmd.Context(), target, scantype)
 			if err != nil {
 				errorMessage := err.Error()
@@ -83,15 +87,28 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
-
 			if target == "" {
 				errorMessage := "target is required"
 				a.OutputSignal.ErrorMessage = &errorMessage
 				a.OutputSignal.Status = 1
 				return
 			}
+			targetHost, portStr, err := net.SplitHostPort(target)
+			if err != nil {
+				errorMessage := err.Error()
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
+			port, err := strconv.ParseUint(portStr, 10, 16)
+			if err != nil {
+				errorMessage := err.Error()
+				a.OutputSignal.ErrorMessage = &errorMessage
+				a.OutputSignal.Status = 1
+				return
+			}
 
-			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, target)
+			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, targetHost, port)
 			if err != nil {
 				errorMessage := err.Error()
 				a.OutputSignal.ErrorMessage = &errorMessage

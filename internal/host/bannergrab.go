@@ -8,7 +8,6 @@ import (
 	"net/netip"
 	"reflect"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -18,11 +17,11 @@ import (
 )
 
 // RunHostBannerGrab performs a banner grab on the specified target
-func RunHostBannerGrab(ctx context.Context, timeout int, target string) (*networkscan.BannerGrabReport, error) {
-	resources := networkscan.BannerGrabReport{Target: target}
+func RunHostBannerGrab(ctx context.Context, timeout int, host string, port uint64) (*networkscan.BannerGrabReport, error) {
+	resources := networkscan.BannerGrabReport{Target: host}
 	errs := []string{}
 
-	ips, port, host, err := getTargetAddressData(target)
+	ips, err := getIPs(host)
 	if err != nil {
 		return &resources, err
 	}
@@ -100,23 +99,15 @@ func metadataMap(resultMetadata plugins.Metadata) map[string]string {
 	return metadata
 }
 
-func getTargetAddressData(target string) ([]net.IP, uint64, string, error) {
-	host, portStr, err := net.SplitHostPort(target)
+func getIPs(target string) ([]net.IP, error) {
+	ips, err := net.LookupIP(target)
 	if err != nil {
-		return nil, 0, "", err
-	}
-	port, err := strconv.ParseUint(portStr, 10, 16)
-	if err != nil {
-		return nil, 0, "", err
-	}
-	ips, err := net.LookupIP(host)
-	if err != nil {
-		return nil, 0, "", err
+		return nil, err
 	}
 	if len(ips) == 0 {
-		return nil, 0, "", errors.New("no IP addresses found for host")
+		return nil, errors.New("no IP addresses found for host")
 	}
-	return ips, port, host, nil
+	return ips, nil
 }
 
 func getTransportTypeEnum(transport string) networkscan.TransportType {
