@@ -128,6 +128,9 @@ github.com/cloudflare/circl/xof/k12
 # github.com/cnf/structhash v0.0.0-20201127153200-e1b16c1ebc08
 ## explicit
 github.com/cnf/structhash
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/dimchansky/utfbom v1.1.1
 ## explicit
 github.com/dimchansky/utfbom
@@ -305,9 +308,54 @@ github.com/pierrec/lz4/v4/internal/xxh32
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
 # github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c
 ## explicit; go 1.14
 github.com/power-devops/perfstat
+# github.com/praetorian-inc/fingerprintx v1.1.14
+## explicit; go 1.20
+github.com/praetorian-inc/fingerprintx/pkg/plugins
+github.com/praetorian-inc/fingerprintx/pkg/plugins/pluginutils
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/dhcp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/dns
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/echo
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/ftp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/http
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/imap
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/ipmi
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/ipsec
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/jdwp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/kafka/kafkaNew
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/kafka/kafkaOld
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/ldap
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/linuxrpc
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/modbus
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/mqtt/mqtt3
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/mqtt/mqtt5
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/mssql
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/mysql
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/netbios
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/ntp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/openvpn
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/oracledb
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/pop3
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/postgresql
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/rdp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/redis
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/rsync
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/rtsp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/smb
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/smtp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/snmp
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/ssh
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/stun
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/telnet
+github.com/praetorian-inc/fingerprintx/pkg/plugins/services/vnc
+github.com/praetorian-inc/fingerprintx/pkg/scan
+github.com/praetorian-inc/fingerprintx/third_party/cryptolib/ssh
+github.com/praetorian-inc/fingerprintx/third_party/cryptolib/ssh/internal/bcrypt_pbkdf
 # github.com/projectdiscovery/asnmap v1.1.0
 ## explicit; go 1.21
 github.com/projectdiscovery/asnmap/libs
@@ -409,6 +457,9 @@ github.com/projectdiscovery/utils/strings
 github.com/projectdiscovery/utils/time
 github.com/projectdiscovery/utils/update
 github.com/projectdiscovery/utils/url
+# github.com/projectdiscovery/wappalyzergo v0.0.77
+## explicit; go 1.16
+github.com/projectdiscovery/wappalyzergo
 # github.com/quic-go/quic-go v0.42.0
 ## explicit; go 1.21
 github.com/quic-go/quic-go/internal/protocol
@@ -444,6 +495,10 @@ github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag
+# github.com/stretchr/testify v1.9.0
+## explicit; go 1.17
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
 # github.com/syndtr/goleveldb v1.0.0
 ## explicit
 github.com/syndtr/goleveldb/leveldb
@@ -554,11 +609,14 @@ go.uber.org/multierr
 ## explicit; go 1.18
 golang.org/x/crypto/blake2b
 golang.org/x/crypto/blake2s
+golang.org/x/crypto/blowfish
 golang.org/x/crypto/cast5
 golang.org/x/crypto/chacha20
 golang.org/x/crypto/chacha20poly1305
 golang.org/x/crypto/cryptobyte
 golang.org/x/crypto/cryptobyte/asn1
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/hkdf
 golang.org/x/crypto/internal/alias
@@ -570,6 +628,7 @@ golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
 golang.org/x/crypto/pbkdf2
+golang.org/x/crypto/poly1305
 golang.org/x/crypto/scrypt
 golang.org/x/crypto/sha3
 # golang.org/x/exp v0.0.0-20231006140011-7918f672742d

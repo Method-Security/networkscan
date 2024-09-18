@@ -8,6 +8,7 @@
 *.so
 *.dylib
 
+
 # Test binary, built with `go test -c`
 *.test
 
@@ -40,3 +41,6 @@ go.work.sum
 # IDE files
 .idea/
 .vscode/
+
+# Other
+.DS_Store

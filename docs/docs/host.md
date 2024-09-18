@@ -4,7 +4,7 @@ The `networkscan host discover` command discovers active network hosts.
 
 ## Usage
 
-To discvoer active hosts on a network (this must be run as a privileged user):
+To discover active hosts on a network (this must be run as a privileged user):
 ```bash
 networkscan host discover  --target 192.168.0.0/24
 ```
