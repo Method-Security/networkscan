@@ -11,11 +11,11 @@ types:
       host: string
       ip: string
       port: integer
-      statusCode: optional<string>
-      transport: common.TransportType
-      service: common.ServiceType
       tls: boolean
       version:  string
+      transport: common.TransportType
+      service: common.ServiceType
+      statusCode: optional<string>
       connection: optional<string>
       contentType: optional<string>
       sameSite: optional<common.SameSiteType>

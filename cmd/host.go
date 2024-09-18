@@ -27,7 +27,6 @@ func (a *NetworkScan) InitHostCommand() {
 				a.OutputSignal.Status = 1
 				return
 			}
-
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
 				errorMessage := err.Error()

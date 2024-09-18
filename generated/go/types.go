@@ -13,11 +13,11 @@ type BannerGrab struct {
 	Host         string            `json:"host" url:"host"`
 	Ip           string            `json:"ip" url:"ip"`
 	Port         int               `json:"port" url:"port"`
-	StatusCode   *string           `json:"statusCode,omitempty" url:"statusCode,omitempty"`
-	Transport    TransportType     `json:"transport" url:"transport"`
-	Service      ServiceType       `json:"service" url:"service"`
 	Tls          bool              `json:"tls" url:"tls"`
 	Version      string            `json:"version" url:"version"`
+	Transport    TransportType     `json:"transport" url:"transport"`
+	Service      ServiceType       `json:"service" url:"service"`
+	StatusCode   *string           `json:"statusCode,omitempty" url:"statusCode,omitempty"`
 	Connection   *string           `json:"connection,omitempty" url:"connection,omitempty"`
 	ContentType  *string           `json:"contentType,omitempty" url:"contentType,omitempty"`
 	SameSite     *SameSiteType     `json:"sameSite,omitempty" url:"sameSite,omitempty"`

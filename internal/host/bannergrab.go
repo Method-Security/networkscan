@@ -22,126 +22,53 @@ func RunHostBannerGrab(ctx context.Context, timeout int, target string) (*networ
 	resources := networkscan.BannerGrabReport{Target: target}
 	errs := []string{}
 
-	host, portStr, err := net.SplitHostPort(target)
-	if err != nil {
-		return &resources, err
-	}
-
-	port, err := strconv.ParseUint(portStr, 10, 16)
-	if err != nil {
-		return &resources, err
-	}
-
-	ips, err := net.LookupIP(host)
-	if err != nil {
-		return &resources, err
-	}
-
-	if len(ips) == 0 {
-		return &resources, errors.New("no IP addresses found for host")
-	}
-
-	ip := ips[0]
-	fxConfig := scan.Config{
-		FastMode:       false,
-		DefaultTimeout: time.Duration(timeout) * time.Second,
-		UDP:            false,
-		Verbose:        false,
-	}
-	ipAddr, err := netip.ParseAddr(ip.String())
-	if err != nil {
-		return &resources, err
-	}
-	fxTarget := plugins.Target{
-		Address: netip.AddrPortFrom(ipAddr, uint16(port)),
-		Host:    host,
-	}
-	targets := []plugins.Target{fxTarget}
-
-	results, err := scan.ScanTargets(targets, fxConfig)
+	ips, port, host, err := getTargetAddressData(target)
 	if err != nil {
 		return &resources, err
 	}
 
 	var bannerResults []*networkscan.BannerGrab
-	for _, result := range results {
-		metadata := make(map[string]string)
-		resultMetadata := result.Metadata()
-		v := reflect.ValueOf(resultMetadata)
-		t := v.Type()
-		for i := 0; i < v.NumField(); i++ {
-			field := t.Field(i)
-			value := v.Field(i)
-			metadata[field.Name] = fmt.Sprintf("%v", value.Interface())
+	for _, ip := range ips {
+		fxConfig := scan.Config{
+			FastMode:       false,
+			DefaultTimeout: time.Duration(timeout) * time.Second,
+			UDP:            false,
+			Verbose:        false,
 		}
-
-		// Marshal Metadata into variables
-		transportTypeEnum, err := networkscan.NewTransportTypeFromString(strings.ToUpper(result.Transport))
+		ipAddr, err := netip.ParseAddr(ip.String())
 		if err != nil {
-			transportTypeEnum, _ = networkscan.NewTransportTypeFromString("UNKNOWN")
+			return &resources, err
 		}
+		fxTarget := plugins.Target{
+			Address: netip.AddrPortFrom(ipAddr, uint16(port)),
+			Host:    host,
+		}
+		targets := []plugins.Target{fxTarget}
 
-		serviceTypeEnum, err := networkscan.NewServiceTypeFromString(strings.ToUpper(result.Protocol))
+		results, err := scan.ScanTargets(targets, fxConfig)
 		if err != nil {
-			serviceTypeEnum, _ = networkscan.NewServiceTypeFromString("UNKNOWN")
+			return &resources, err
 		}
 
-		var statusCode *string
-		if val, ok := metadata["StatusCode"]; ok {
-			statusCode = &val
-		}
-
-		var technogliesList *[]string
-		if val, ok := metadata["Technologies"]; ok {
-			techs := strings.Split(strings.Trim(val, "[]"), ",")
-			technogliesList = &techs
-		}
-
-		var connection *string
-		var contentType *string
-		sameSiteString := ""
-		if val, ok := metadata["ResponseHeaders"]; ok {
-			responseHeadersMap := unmarshalMapString(val)
-
-			if connectionData, ok := responseHeadersMap["Connection"]; ok {
-				connection = &connectionData
+		for _, result := range results {
+			metadata := metadataMap(result.Metadata())
+			bannerResult := networkscan.BannerGrab{
+				Host:         result.Host,
+				Ip:           result.IP,
+				Port:         result.Port,
+				Tls:          result.TLS,
+				Version:      result.Version,
+				Transport:    getTransportTypeEnum(result.Transport),
+				Service:      getServiceTypeEnum(result.Protocol),
+				StatusCode:   getStatusCode(metadata),
+				Connection:   getConnectionBanner(metadata),
+				ContentType:  getContentTypeBanner(metadata),
+				SameSite:     getSamesiteEnum(metadata),
+				Technologies: getTechnologiesList(metadata),
+				Metadata:     metadata,
 			}
-
-			if contentTypeData, ok := responseHeadersMap["Content-Type"]; ok {
-				contentType = &contentTypeData
-			}
-
-			if cookieData, ok := responseHeadersMap["Set-Cookie"]; ok {
-				if strings.Contains(cookieData, "SameSite=") {
-					startIndex := strings.Index(cookieData, "SameSite=")
-					sameSiteValueSub := cookieData[startIndex+len("SameSite="):]
-					sameSiteString = strings.Split(sameSiteValueSub, ";")[0]
-				}
-			}
+			bannerResults = append(bannerResults, &bannerResult)
 		}
-
-		sameSiteTypeEnum, err := networkscan.NewSameSiteTypeFromString(strings.ToUpper(sameSiteString))
-		if err != nil {
-			sameSiteTypeEnum, _ = networkscan.NewSameSiteTypeFromString("UNKNOWN")
-		}
-
-		bannerResult := networkscan.BannerGrab{
-			Host:         result.Host,
-			Ip:           result.IP,
-			Port:         result.Port,
-			StatusCode:   statusCode,
-			Tls:          result.TLS,
-			Transport:    transportTypeEnum,
-			Service:      serviceTypeEnum,
-			Version:      result.Version,
-			Connection:   connection,
-			ContentType:  contentType,
-			SameSite:     &sameSiteTypeEnum,
-			Technologies: *technogliesList,
-			Metadata:     metadata,
-		}
-
-		bannerResults = append(bannerResults, &bannerResult)
 	}
 
 	resources.BannerGrabs = bannerResults
@@ -149,18 +76,119 @@ func RunHostBannerGrab(ctx context.Context, timeout int, target string) (*networ
 	return &resources, nil
 }
 
-// Function to unmarshal a string that has the structure of a Map
 func unmarshalMapString(headerStr string) map[string]string {
 	data := make(map[string]string)
-
 	re := regexp.MustCompile(`(\w[\w-]*):(\[.*?\]|\S+)`)
 	matches := re.FindAllStringSubmatch(headerStr, -1)
-
 	for _, match := range matches {
 		key := match[1]
 		value := strings.Trim(match[2], "[]")
 		data[key] = value
 	}
-
 	return data
+}
+
+func metadataMap(resultMetadata plugins.Metadata) map[string]string {
+	metadata := make(map[string]string)
+	v := reflect.ValueOf(resultMetadata)
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		field := t.Field(i)
+		value := v.Field(i)
+		metadata[field.Name] = fmt.Sprintf("%v", value.Interface())
+	}
+	return metadata
+}
+
+func getTargetAddressData(target string) ([]net.IP, uint64, string, error) {
+	host, portStr, err := net.SplitHostPort(target)
+	if err != nil {
+		return nil, 0, "", err
+	}
+	port, err := strconv.ParseUint(portStr, 10, 16)
+	if err != nil {
+		return nil, 0, "", err
+	}
+	ips, err := net.LookupIP(host)
+	if err != nil {
+		return nil, 0, "", err
+	}
+	if len(ips) == 0 {
+		return nil, 0, "", errors.New("no IP addresses found for host")
+	}
+	return ips, port, host, nil
+}
+
+func getTransportTypeEnum(transport string) networkscan.TransportType {
+	transportTypeEnum, err := networkscan.NewTransportTypeFromString(strings.ToUpper(transport))
+	if err != nil {
+		transportTypeEnum, _ = networkscan.NewTransportTypeFromString("UNKNOWN")
+	}
+	return transportTypeEnum
+}
+
+func getServiceTypeEnum(protocol string) networkscan.ServiceType {
+	serviceTypeEnum, err := networkscan.NewServiceTypeFromString(strings.ToUpper(protocol))
+	if err != nil {
+		serviceTypeEnum, _ = networkscan.NewServiceTypeFromString("UNKNOWN")
+	}
+	return serviceTypeEnum
+}
+
+func getTechnologiesList(metadata map[string]string) []string {
+	if val, ok := metadata["Technologies"]; ok {
+		techs := strings.Split(strings.Trim(val, "[]"), ",")
+		return techs
+	}
+	return nil
+}
+
+func getStatusCode(metadata map[string]string) *string {
+	if val, ok := metadata["StatusCode"]; ok {
+		return &val
+	}
+	return nil
+}
+
+func getConnectionBanner(metadata map[string]string) *string {
+	if val, ok := metadata["ResponseHeaders"]; ok {
+		if connectionData, ok := unmarshalMapString(val)["Connection"]; ok {
+			return &connectionData
+		}
+	}
+	return nil
+}
+
+func getContentTypeBanner(metadata map[string]string) *string {
+	if val, ok := metadata["ResponseHeaders"]; ok {
+		if connectionData, ok := unmarshalMapString(val)["Connection"]; ok {
+			return &connectionData
+		}
+	}
+	return nil
+}
+
+func getSamesiteEnum(metadata map[string]string) *networkscan.SameSiteType {
+	val, ok := metadata["ResponseHeaders"]
+	if !ok {
+		return nil
+	}
+
+	responseHeadersMap := unmarshalMapString(val)
+	cookieData, ok := responseHeadersMap["Set-Cookie"]
+	if !ok || !strings.Contains(cookieData, "SameSite=") {
+		sameSiteTypeEnum, _ := networkscan.NewSameSiteTypeFromString("UNKNOWN")
+		return &sameSiteTypeEnum
+	}
+
+	startIndex := strings.Index(cookieData, "SameSite=")
+	sameSiteValueSub := cookieData[startIndex+len("SameSite="):]
+	sameSiteString := strings.Split(sameSiteValueSub, ";")[0]
+
+	sameSiteTypeEnum, err := networkscan.NewSameSiteTypeFromString(strings.ToUpper(sameSiteString))
+	if err != nil {
+		sameSiteTypeEnum, _ = networkscan.NewSameSiteTypeFromString("UNKNOWN")
+	}
+
+	return &sameSiteTypeEnum
 }
