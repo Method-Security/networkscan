@@ -5,7 +5,6 @@ networkscan offers a variety of scanning techniques to security teams working ac
 - [Port](./port.md)
 - [Host](./host.md)
 - [OS](./os.md)
-- [App](./app.md)
 
 ## Top Level Flags
 
