@@ -17,7 +17,6 @@ func main() {
 	networkscan.InitPortCommand()
 	networkscan.InitHostCommand()
 	networkscan.InitOSCommand()
-	networkscan.InitAppCommand()
 
 	if err := networkscan.RootCmd.Execute(); err != nil {
 		os.Exit(1)
