@@ -55,8 +55,8 @@ func (a *NetworkScan) InitAddressCommand() {
 	bannerGrabCmd.Flags().String("target", "", "Target address (e.g., 192.168.1.1 or example.com)")
 	bannerGrabCmd.Flags().Uint16("port", 0, "Address Port (e.g., 443)")
 	bannerGrabCmd.Flags().Int("timeout", 5, "Timeout limit for each handshake in seconds")
-	bannerGrabCmd.MarkFlagRequired("target")
-	bannerGrabCmd.MarkFlagRequired("port")
+	_ = bannerGrabCmd.MarkFlagRequired("target")
+	_ = bannerGrabCmd.MarkFlagRequired("port")
 
 	addressCmd.AddCommand(bannerGrabCmd)
 	a.RootCmd.AddCommand(addressCmd)
