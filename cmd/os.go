@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"os/exec"
 
 	"github.com/Method-Security/networkscan/internal/os"
@@ -24,39 +25,29 @@ func (a *NetworkScan) InitOSCommand() {
 		Run: func(cmd *cobra.Command, args []string) {
 			// osdetect can only be run as a sudoer or privileged user
 			if !privileges.IsPrivileged {
-				errorMessage := "os detect can only be run as a privileged user"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(errors.New("os detect can only be run as a privileged user"))
 				return
 			}
 
 			// Check if nmap is installed and in the system path
 			_, err := exec.LookPath("nmap")
 			if err != nil {
-				errorMessage := "nmap is not installed or is not in the system path"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(errors.New("nmap is not installed or is not in the system path"))
 				return
 			}
 
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			if target == "" {
-				errorMessage := "target is required"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(errors.New("target is required"))
 				return
 			}
 			report, err := os.RunOSDetect(cmd.Context(), target)
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			a.OutputSignal.Content = report
@@ -64,6 +55,7 @@ func (a *NetworkScan) InitOSCommand() {
 	}
 
 	osDetectCmd.Flags().String("target", "", "Target IP or FQDN to detect")
+	_ = osDetectCmd.MarkFlagRequired("target")
 
 	osCmd.AddCommand(osDetectCmd)
 	a.RootCmd.AddCommand(osCmd)

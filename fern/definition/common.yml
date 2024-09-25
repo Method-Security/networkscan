@@ -4,44 +4,47 @@ types:
       - TCP
       - UDP
       - UNKNOWN
-  ServiceType:
+  ProtocolType:
     enum:
+      - DNS
+      - DHCP
+      - ECHO
+      - FTP
       - HTTP
       - HTTPS
-      - FTP
-      - SFTP
-      - SSH
-      - TELNET
-      - SMTP
-      - SMTPS
-      - POP3
-      - POP3S
+      - HTTP2
       - IMAP
       - IMAPS
-      - DNS
-      - SNMP
+      - IPMI
+      - IPSEC
+      - JDWP
       - KAFKA
-      - MQTT3
-      - MQTT5
-      - RDP
-      - REDIS
       - LDAP
       - LDAPS
-      - RSYNC
-      - RPC
-      - POSTGRESSQL
-      - MYSQL
-      - MSSQL
-      - ORACLEDB
-      - VNC
       - MODBUS
-      - SMB
-      - IPSEC
-      - STUN
-      - RTSP
-      - DHCP
+      - MQTT
+      - MSSQL
+      - MYSQL
+      - NETBIOS
       - NTP
+      - ORACLE
       - OPENVPN
+      - POP3
+      - POP3S
+      - POSTGRESQL
+      - RDP
+      - RPC
+      - REDIS
+      - RSYNC
+      - RTSP
+      - SMB
+      - SMTP
+      - SMTPS
+      - SNMP
+      - SSH
+      - STUN
+      - TELNET
+      - VNC
       - UNKNOWN
   SameSiteType:
     enum:

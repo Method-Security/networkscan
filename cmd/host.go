@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"errors"
+
 	"github.com/Method-Security/networkscan/internal/host"
 	"github.com/projectdiscovery/naabu/v2/pkg/privileges"
 	"github.com/spf13/cobra"
@@ -22,31 +24,23 @@ func (a *NetworkScan) InitHostCommand() {
 		Run: func(cmd *cobra.Command, args []string) {
 			// hostdiscover can only be run as a sudoer or privileged user
 			if !privileges.IsPrivileged {
-				errorMessage := "host discover can only be run as a privileged user"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(errors.New("host discover can only be run as a privileged user"))
 				return
 			}
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			scantype, err := cmd.Flags().GetString("scantype")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 
 			report, err := host.RunHostDiscover(cmd.Context(), target, scantype)
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			a.OutputSignal.Content = report
@@ -57,52 +51,5 @@ func (a *NetworkScan) InitHostCommand() {
 	hostDiscoverCmd.Flags().String("scantype", "", "Scan type for host discovery (tcpsyn | tcpack | icmpecho | icmptimestamp | arp | icmpaddressmask)")
 	_ = hostDiscoverCmd.MarkFlagRequired("target")
 	hostCmd.AddCommand(hostDiscoverCmd)
-	a.RootCmd.AddCommand(hostCmd)
-
-	hostBannerGrabCmd := &cobra.Command{
-		Use:   "bannergrab",
-		Short: "Grab banner from a host",
-		Long:  `Grab banner from a host using a socket-based address`,
-		Run: func(cmd *cobra.Command, args []string) {
-			target, err := cmd.Flags().GetString("target")
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			port, err := cmd.Flags().GetUint16("port")
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			timeout, err := cmd.Flags().GetInt("timeout")
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-
-			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, target, port)
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			a.OutputSignal.Content = report
-		},
-	}
-
-	hostBannerGrabCmd.Flags().String("target", "", "Target address (e.g., 192.168.1.1)")
-	hostBannerGrabCmd.Flags().Uint16("port", 0, "Address Port (e.g., 443)")
-	hostBannerGrabCmd.Flags().Int("timeout", 5, "Timeout limit in seconds")
-	_ = hostBannerGrabCmd.MarkFlagRequired("target")
-	_ = hostBannerGrabCmd.MarkFlagRequired("port")
-
-	hostCmd.AddCommand(hostBannerGrabCmd)
 	a.RootCmd.AddCommand(hostCmd)
 }

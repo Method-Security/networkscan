@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"errors"
+
 	"github.com/Method-Security/networkscan/internal/port"
 	"github.com/spf13/cobra"
 )
@@ -21,36 +23,26 @@ func (a *NetworkScan) InitPortCommand() {
 		Run: func(cmd *cobra.Command, args []string) {
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			if target == "" {
-				errorMessage := "target is required"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(errors.New("target is required"))
 				return
 			}
 			ports, err := cmd.Flags().GetString("ports")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			topport, err := cmd.Flags().GetString("topports")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			report, err := port.RunPortScan(cmd.Context(), target, ports, topport)
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			a.OutputSignal.Content = report
@@ -60,6 +52,7 @@ func (a *NetworkScan) InitPortCommand() {
 	portScanCmd.Flags().String("target", "", "Target IP or FQDN to scan for ports")
 	portScanCmd.Flags().String("ports", "", "Port/Port Range to scan")
 	portScanCmd.Flags().String("topports", "", "Top Ports to scan (full | 100 |1000)")
+	_ = portScanCmd.MarkFlagRequired("target")
 
 	portCmd.AddCommand(portScanCmd)
 	a.RootCmd.AddCommand(portCmd)

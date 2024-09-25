@@ -5,11 +5,11 @@ go 1.22
 toolchain go1.22.4
 
 require (
-	github.com/Method-Security/pkg v0.0.2
+	github.com/Method-Security/pkg v0.0.3
 	github.com/Ullaakut/nmap/v3 v3.0.3
 	github.com/google/uuid v1.3.1
 	github.com/palantir/pkg/datetime v1.1.0
-	github.com/palantir/witchcraft-go-logging v1.51.0
+	github.com/palantir/witchcraft-go-logging v1.57.0
 	github.com/praetorian-inc/fingerprintx v1.1.14
 	github.com/projectdiscovery/goflags v0.1.51
 	github.com/projectdiscovery/naabu/v2 v2.3.1
@@ -73,9 +73,9 @@ require (
 	github.com/palantir/pkg/safelong v1.1.0 // indirect
 	github.com/palantir/pkg/safeyaml v1.1.0 // indirect
 	github.com/palantir/pkg/transform v1.1.0 // indirect
-	github.com/palantir/witchcraft-go-error v1.34.0 // indirect
-	github.com/palantir/witchcraft-go-params v1.31.0 // indirect
-	github.com/palantir/witchcraft-go-tracing v1.33.0 // indirect
+	github.com/palantir/witchcraft-go-error v1.38.0 // indirect
+	github.com/palantir/witchcraft-go-params v1.35.0 // indirect
+	github.com/palantir/witchcraft-go-tracing v1.37.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
