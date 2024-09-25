@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"errors"
+
 	"github.com/Method-Security/networkscan/internal/host"
 	"github.com/projectdiscovery/naabu/v2/pkg/privileges"
 	"github.com/spf13/cobra"
@@ -22,31 +24,23 @@ func (a *NetworkScan) InitHostCommand() {
 		Run: func(cmd *cobra.Command, args []string) {
 			// hostdiscover can only be run as a sudoer or privileged user
 			if !privileges.IsPrivileged {
-				errorMessage := "host discover can only be run as a privileged user"
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(errors.New("host discover can only be run as a privileged user"))
 				return
 			}
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			scantype, err := cmd.Flags().GetString("scantype")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 
 			report, err := host.RunHostDiscover(cmd.Context(), target, scantype)
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			a.OutputSignal.Content = report

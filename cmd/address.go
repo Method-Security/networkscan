@@ -21,31 +21,23 @@ func (a *NetworkScan) InitAddressCommand() {
 		Run: func(cmd *cobra.Command, args []string) {
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			port, err := cmd.Flags().GetUint16("port")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			timeout, err := cmd.Flags().GetInt("timeout")
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 
 			report, err := address.RunBannerGrab(cmd.Context(), timeout, target, port)
 			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
+				a.OutputSignal.AddError(err)
 				return
 			}
 			a.OutputSignal.Content = report
