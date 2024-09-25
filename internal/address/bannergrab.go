@@ -32,7 +32,6 @@ func RunBannerGrab(ctx context.Context, timeout int, target string, port uint16)
 	if err != nil {
 		return &resources, err
 	}
-	fmt.Println(ips)
 
 	var bannerResults []*networkscan.BannerGrab
 	for _, ip := range ips {
@@ -45,7 +44,6 @@ func RunBannerGrab(ctx context.Context, timeout int, target string, port uint16)
 			Address: netip.AddrPortFrom(ipAddr, port),
 			Host:    target,
 		}
-		fmt.Println(fxTarget)
 
 		result, err := fxConfig.SimpleScanTarget(fxTarget)
 		if err != nil {
