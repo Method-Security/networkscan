@@ -17,6 +17,7 @@ nav:
         - Port: docs/port.md
         - Host: docs/host.md
         - OS: docs/os.md
+        = Address: docs/address.md
   - Contributing:
       - How to contribute: community/community.md
       - Development:

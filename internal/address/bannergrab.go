@@ -1,4 +1,4 @@
-package host
+package address
 
 import (
 	"context"
@@ -16,61 +16,63 @@ import (
 	"github.com/praetorian-inc/fingerprintx/pkg/scan"
 )
 
-// RunHostBannerGrab performs a banner grab on the specified target
-func RunHostBannerGrab(ctx context.Context, timeout int, target string, port uint16) (*networkscan.BannerGrabReport, error) {
+// RunBannerGrab performs a banner grab on the specified target
+func RunBannerGrab(ctx context.Context, timeout int, target string, port uint16) (*networkscan.BannerGrabReport, error) {
 	resources := networkscan.BannerGrabReport{Target: target}
-	errs := []string{}
+	errors := []string{}
+
+	fxConfig := scan.Config{
+		FastMode:       false,
+		DefaultTimeout: time.Duration(timeout) * time.Second,
+		UDP:            false,
+		Verbose:        true,
+	}
 
 	ips, err := getIPs(target)
 	if err != nil {
 		return &resources, err
 	}
+	fmt.Println(ips)
 
 	var bannerResults []*networkscan.BannerGrab
 	for _, ip := range ips {
-		fxConfig := scan.Config{
-			FastMode:       false,
-			DefaultTimeout: time.Duration(timeout) * time.Second,
-			UDP:            false,
-			Verbose:        true,
-		}
 		ipAddr, err := netip.ParseAddr(ip.String())
 		if err != nil {
 			return &resources, err
 		}
+
 		fxTarget := plugins.Target{
 			Address: netip.AddrPortFrom(ipAddr, port),
 			Host:    target,
 		}
-		targets := []plugins.Target{fxTarget}
+		fmt.Println(fxTarget)
 
-		results, err := scan.ScanTargets(targets, fxConfig)
+		result, err := fxConfig.SimpleScanTarget(fxTarget)
 		if err != nil {
-			return &resources, err
+			errors = append(errors, err.Error())
+			continue
 		}
 
-		for _, result := range results {
-			metadata := metadataMap(result.Metadata())
-			bannerResult := networkscan.BannerGrab{
-				Host:        result.Host,
-				Ip:          result.IP,
-				Port:        result.Port,
-				Tls:         result.TLS,
-				Version:     result.Version,
-				Transport:   getTransportTypeEnum(result.Transport),
-				Service:     getServiceTypeEnum(result.Protocol),
-				StatusCode:  getStatusCode(metadata),
-				Connection:  getConnectionBanner(metadata),
-				ContentType: getContentTypeBanner(metadata),
-				SameSite:    getSamesiteEnum(metadata),
-				Metadata:    metadata,
-			}
-			bannerResults = append(bannerResults, &bannerResult)
+		metadata := metadataMap(result.Metadata())
+		bannerResult := networkscan.BannerGrab{
+			Host:        result.Host,
+			Ip:          result.IP,
+			Port:        result.Port,
+			Tls:         result.TLS,
+			Version:     result.Version,
+			Transport:   getTransportTypeEnum(result.Transport),
+			Protocol:    getProtocolTypeEnum(result.Protocol),
+			StatusCode:  getStatusCode(metadata),
+			Connection:  getConnectionBanner(metadata),
+			ContentType: getContentTypeBanner(metadata),
+			SameSite:    getSamesiteEnum(metadata),
+			Metadata:    metadata,
 		}
+		bannerResults = append(bannerResults, &bannerResult)
 	}
 
 	resources.BannerGrabs = bannerResults
-	resources.Errors = errs
+	resources.Errors = errors
 	return &resources, nil
 }
 
@@ -117,10 +119,10 @@ func getTransportTypeEnum(transport string) networkscan.TransportType {
 	return transportTypeEnum
 }
 
-func getServiceTypeEnum(protocol string) networkscan.ServiceType {
-	serviceTypeEnum, err := networkscan.NewServiceTypeFromString(strings.ToUpper(protocol))
+func getProtocolTypeEnum(protocol string) networkscan.ProtocolType {
+	serviceTypeEnum, err := networkscan.NewProtocolTypeFromString(strings.ToUpper(protocol))
 	if err != nil {
-		serviceTypeEnum, _ = networkscan.NewServiceTypeFromString("UNKNOWN")
+		serviceTypeEnum, _ = networkscan.NewProtocolTypeFromString("UNKNOWN")
 	}
 	return serviceTypeEnum
 }

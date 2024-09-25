@@ -16,12 +16,13 @@ type BannerGrab struct {
 	Tls         bool              `json:"tls" url:"tls"`
 	Version     string            `json:"version" url:"version"`
 	Transport   TransportType     `json:"transport" url:"transport"`
-	Service     ServiceType       `json:"service" url:"service"`
+	Protocol    ProtocolType      `json:"protocol" url:"protocol"`
 	StatusCode  *string           `json:"statusCode,omitempty" url:"statusCode,omitempty"`
 	Connection  *string           `json:"connection,omitempty" url:"connection,omitempty"`
 	ContentType *string           `json:"contentType,omitempty" url:"contentType,omitempty"`
 	SameSite    *SameSiteType     `json:"sameSite,omitempty" url:"sameSite,omitempty"`
 	Metadata    map[string]string `json:"metadata,omitempty" url:"metadata,omitempty"`
+	Raw         *string           `json:"raw,omitempty" url:"raw,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -165,6 +166,142 @@ func (c *CookieInfo) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type ProtocolType string
+
+const (
+	ProtocolTypeDns        ProtocolType = "DNS"
+	ProtocolTypeDhcp       ProtocolType = "DHCP"
+	ProtocolTypeEcho       ProtocolType = "ECHO"
+	ProtocolTypeFtp        ProtocolType = "FTP"
+	ProtocolTypeHttp       ProtocolType = "HTTP"
+	ProtocolTypeHttps      ProtocolType = "HTTPS"
+	ProtocolTypeHttp2      ProtocolType = "HTTP2"
+	ProtocolTypeImap       ProtocolType = "IMAP"
+	ProtocolTypeImaps      ProtocolType = "IMAPS"
+	ProtocolTypeIpmi       ProtocolType = "IPMI"
+	ProtocolTypeIpsec      ProtocolType = "IPSEC"
+	ProtocolTypeJdwp       ProtocolType = "JDWP"
+	ProtocolTypeKafka      ProtocolType = "KAFKA"
+	ProtocolTypeLdap       ProtocolType = "LDAP"
+	ProtocolTypeLdaps      ProtocolType = "LDAPS"
+	ProtocolTypeModbus     ProtocolType = "MODBUS"
+	ProtocolTypeMqtt       ProtocolType = "MQTT"
+	ProtocolTypeMssql      ProtocolType = "MSSQL"
+	ProtocolTypeMysql      ProtocolType = "MYSQL"
+	ProtocolTypeNetbios    ProtocolType = "NETBIOS"
+	ProtocolTypeNtp        ProtocolType = "NTP"
+	ProtocolTypeOracle     ProtocolType = "ORACLE"
+	ProtocolTypeOpenvpn    ProtocolType = "OPENVPN"
+	ProtocolTypePop3       ProtocolType = "POP3"
+	ProtocolTypePop3S      ProtocolType = "POP3S"
+	ProtocolTypePostgresql ProtocolType = "POSTGRESQL"
+	ProtocolTypeRdp        ProtocolType = "RDP"
+	ProtocolTypeRpc        ProtocolType = "RPC"
+	ProtocolTypeRedis      ProtocolType = "REDIS"
+	ProtocolTypeRsync      ProtocolType = "RSYNC"
+	ProtocolTypeRtsp       ProtocolType = "RTSP"
+	ProtocolTypeSmb        ProtocolType = "SMB"
+	ProtocolTypeSmtp       ProtocolType = "SMTP"
+	ProtocolTypeSmtps      ProtocolType = "SMTPS"
+	ProtocolTypeSnmp       ProtocolType = "SNMP"
+	ProtocolTypeSsh        ProtocolType = "SSH"
+	ProtocolTypeStun       ProtocolType = "STUN"
+	ProtocolTypeTelnet     ProtocolType = "TELNET"
+	ProtocolTypeVnc        ProtocolType = "VNC"
+	ProtocolTypeUnknown    ProtocolType = "UNKNOWN"
+)
+
+func NewProtocolTypeFromString(s string) (ProtocolType, error) {
+	switch s {
+	case "DNS":
+		return ProtocolTypeDns, nil
+	case "DHCP":
+		return ProtocolTypeDhcp, nil
+	case "ECHO":
+		return ProtocolTypeEcho, nil
+	case "FTP":
+		return ProtocolTypeFtp, nil
+	case "HTTP":
+		return ProtocolTypeHttp, nil
+	case "HTTPS":
+		return ProtocolTypeHttps, nil
+	case "HTTP2":
+		return ProtocolTypeHttp2, nil
+	case "IMAP":
+		return ProtocolTypeImap, nil
+	case "IMAPS":
+		return ProtocolTypeImaps, nil
+	case "IPMI":
+		return ProtocolTypeIpmi, nil
+	case "IPSEC":
+		return ProtocolTypeIpsec, nil
+	case "JDWP":
+		return ProtocolTypeJdwp, nil
+	case "KAFKA":
+		return ProtocolTypeKafka, nil
+	case "LDAP":
+		return ProtocolTypeLdap, nil
+	case "LDAPS":
+		return ProtocolTypeLdaps, nil
+	case "MODBUS":
+		return ProtocolTypeModbus, nil
+	case "MQTT":
+		return ProtocolTypeMqtt, nil
+	case "MSSQL":
+		return ProtocolTypeMssql, nil
+	case "MYSQL":
+		return ProtocolTypeMysql, nil
+	case "NETBIOS":
+		return ProtocolTypeNetbios, nil
+	case "NTP":
+		return ProtocolTypeNtp, nil
+	case "ORACLE":
+		return ProtocolTypeOracle, nil
+	case "OPENVPN":
+		return ProtocolTypeOpenvpn, nil
+	case "POP3":
+		return ProtocolTypePop3, nil
+	case "POP3S":
+		return ProtocolTypePop3S, nil
+	case "POSTGRESQL":
+		return ProtocolTypePostgresql, nil
+	case "RDP":
+		return ProtocolTypeRdp, nil
+	case "RPC":
+		return ProtocolTypeRpc, nil
+	case "REDIS":
+		return ProtocolTypeRedis, nil
+	case "RSYNC":
+		return ProtocolTypeRsync, nil
+	case "RTSP":
+		return ProtocolTypeRtsp, nil
+	case "SMB":
+		return ProtocolTypeSmb, nil
+	case "SMTP":
+		return ProtocolTypeSmtp, nil
+	case "SMTPS":
+		return ProtocolTypeSmtps, nil
+	case "SNMP":
+		return ProtocolTypeSnmp, nil
+	case "SSH":
+		return ProtocolTypeSsh, nil
+	case "STUN":
+		return ProtocolTypeStun, nil
+	case "TELNET":
+		return ProtocolTypeTelnet, nil
+	case "VNC":
+		return ProtocolTypeVnc, nil
+	case "UNKNOWN":
+		return ProtocolTypeUnknown, nil
+	}
+	var t ProtocolType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p ProtocolType) Ptr() *ProtocolType {
+	return &p
+}
+
 type SameSiteType string
 
 const (
@@ -190,133 +327,6 @@ func NewSameSiteTypeFromString(s string) (SameSiteType, error) {
 }
 
 func (s SameSiteType) Ptr() *SameSiteType {
-	return &s
-}
-
-type ServiceType string
-
-const (
-	ServiceTypeHttp        ServiceType = "HTTP"
-	ServiceTypeHttps       ServiceType = "HTTPS"
-	ServiceTypeFtp         ServiceType = "FTP"
-	ServiceTypeSftp        ServiceType = "SFTP"
-	ServiceTypeSsh         ServiceType = "SSH"
-	ServiceTypeTelnet      ServiceType = "TELNET"
-	ServiceTypeSmtp        ServiceType = "SMTP"
-	ServiceTypeSmtps       ServiceType = "SMTPS"
-	ServiceTypePop3        ServiceType = "POP3"
-	ServiceTypePop3S       ServiceType = "POP3S"
-	ServiceTypeImap        ServiceType = "IMAP"
-	ServiceTypeImaps       ServiceType = "IMAPS"
-	ServiceTypeDns         ServiceType = "DNS"
-	ServiceTypeSnmp        ServiceType = "SNMP"
-	ServiceTypeKafka       ServiceType = "KAFKA"
-	ServiceTypeMqtt3       ServiceType = "MQTT3"
-	ServiceTypeMqtt5       ServiceType = "MQTT5"
-	ServiceTypeRdp         ServiceType = "RDP"
-	ServiceTypeRedis       ServiceType = "REDIS"
-	ServiceTypeLdap        ServiceType = "LDAP"
-	ServiceTypeLdaps       ServiceType = "LDAPS"
-	ServiceTypeRsync       ServiceType = "RSYNC"
-	ServiceTypeRpc         ServiceType = "RPC"
-	ServiceTypePostgressql ServiceType = "POSTGRESSQL"
-	ServiceTypeMysql       ServiceType = "MYSQL"
-	ServiceTypeMssql       ServiceType = "MSSQL"
-	ServiceTypeOracledb    ServiceType = "ORACLEDB"
-	ServiceTypeVnc         ServiceType = "VNC"
-	ServiceTypeModbus      ServiceType = "MODBUS"
-	ServiceTypeSmb         ServiceType = "SMB"
-	ServiceTypeIpsec       ServiceType = "IPSEC"
-	ServiceTypeStun        ServiceType = "STUN"
-	ServiceTypeRtsp        ServiceType = "RTSP"
-	ServiceTypeDhcp        ServiceType = "DHCP"
-	ServiceTypeNtp         ServiceType = "NTP"
-	ServiceTypeOpenvpn     ServiceType = "OPENVPN"
-	ServiceTypeUnknown     ServiceType = "UNKNOWN"
-)
-
-func NewServiceTypeFromString(s string) (ServiceType, error) {
-	switch s {
-	case "HTTP":
-		return ServiceTypeHttp, nil
-	case "HTTPS":
-		return ServiceTypeHttps, nil
-	case "FTP":
-		return ServiceTypeFtp, nil
-	case "SFTP":
-		return ServiceTypeSftp, nil
-	case "SSH":
-		return ServiceTypeSsh, nil
-	case "TELNET":
-		return ServiceTypeTelnet, nil
-	case "SMTP":
-		return ServiceTypeSmtp, nil
-	case "SMTPS":
-		return ServiceTypeSmtps, nil
-	case "POP3":
-		return ServiceTypePop3, nil
-	case "POP3S":
-		return ServiceTypePop3S, nil
-	case "IMAP":
-		return ServiceTypeImap, nil
-	case "IMAPS":
-		return ServiceTypeImaps, nil
-	case "DNS":
-		return ServiceTypeDns, nil
-	case "SNMP":
-		return ServiceTypeSnmp, nil
-	case "KAFKA":
-		return ServiceTypeKafka, nil
-	case "MQTT3":
-		return ServiceTypeMqtt3, nil
-	case "MQTT5":
-		return ServiceTypeMqtt5, nil
-	case "RDP":
-		return ServiceTypeRdp, nil
-	case "REDIS":
-		return ServiceTypeRedis, nil
-	case "LDAP":
-		return ServiceTypeLdap, nil
-	case "LDAPS":
-		return ServiceTypeLdaps, nil
-	case "RSYNC":
-		return ServiceTypeRsync, nil
-	case "RPC":
-		return ServiceTypeRpc, nil
-	case "POSTGRESSQL":
-		return ServiceTypePostgressql, nil
-	case "MYSQL":
-		return ServiceTypeMysql, nil
-	case "MSSQL":
-		return ServiceTypeMssql, nil
-	case "ORACLEDB":
-		return ServiceTypeOracledb, nil
-	case "VNC":
-		return ServiceTypeVnc, nil
-	case "MODBUS":
-		return ServiceTypeModbus, nil
-	case "SMB":
-		return ServiceTypeSmb, nil
-	case "IPSEC":
-		return ServiceTypeIpsec, nil
-	case "STUN":
-		return ServiceTypeStun, nil
-	case "RTSP":
-		return ServiceTypeRtsp, nil
-	case "DHCP":
-		return ServiceTypeDhcp, nil
-	case "NTP":
-		return ServiceTypeNtp, nil
-	case "OPENVPN":
-		return ServiceTypeOpenvpn, nil
-	case "UNKNOWN":
-		return ServiceTypeUnknown, nil
-	}
-	var t ServiceType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (s ServiceType) Ptr() *ServiceType {
 	return &s
 }
 

@@ -55,54 +55,7 @@ func (a *NetworkScan) InitHostCommand() {
 
 	hostDiscoverCmd.Flags().String("target", "", "Target IP, host, or CIDR to scan for hosts")
 	hostDiscoverCmd.Flags().String("scantype", "", "Scan type for host discovery (tcpsyn | tcpack | icmpecho | icmptimestamp | arp | icmpaddressmask)")
-	_ = hostDiscoverCmd.MarkFlagRequired("target")
+	hostDiscoverCmd.MarkFlagRequired("target")
 	hostCmd.AddCommand(hostDiscoverCmd)
-	a.RootCmd.AddCommand(hostCmd)
-
-	hostBannerGrabCmd := &cobra.Command{
-		Use:   "bannergrab",
-		Short: "Grab banner from a host",
-		Long:  `Grab banner from a host using a socket-based address`,
-		Run: func(cmd *cobra.Command, args []string) {
-			target, err := cmd.Flags().GetString("target")
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			port, err := cmd.Flags().GetUint16("port")
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			timeout, err := cmd.Flags().GetInt("timeout")
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-
-			report, err := host.RunHostBannerGrab(cmd.Context(), timeout, target, port)
-			if err != nil {
-				errorMessage := err.Error()
-				a.OutputSignal.ErrorMessage = &errorMessage
-				a.OutputSignal.Status = 1
-				return
-			}
-			a.OutputSignal.Content = report
-		},
-	}
-
-	hostBannerGrabCmd.Flags().String("target", "", "Target address (e.g., 192.168.1.1)")
-	hostBannerGrabCmd.Flags().Uint16("port", 0, "Address Port (e.g., 443)")
-	hostBannerGrabCmd.Flags().Int("timeout", 5, "Timeout limit in seconds")
-	_ = hostBannerGrabCmd.MarkFlagRequired("target")
-	_ = hostBannerGrabCmd.MarkFlagRequired("port")
-
-	hostCmd.AddCommand(hostBannerGrabCmd)
 	a.RootCmd.AddCommand(hostCmd)
 }
