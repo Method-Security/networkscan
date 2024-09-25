@@ -22,7 +22,6 @@ type BannerGrab struct {
 	ContentType *string           `json:"contentType,omitempty" url:"contentType,omitempty"`
 	SameSite    *SameSiteType     `json:"sameSite,omitempty" url:"sameSite,omitempty"`
 	Metadata    map[string]string `json:"metadata,omitempty" url:"metadata,omitempty"`
-	Raw         *string           `json:"raw,omitempty" url:"raw,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
