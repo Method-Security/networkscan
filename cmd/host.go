@@ -99,7 +99,7 @@ func (a *NetworkScan) InitHostCommand() {
 
 	hostBannerGrabCmd.Flags().String("target", "", "Target address (e.g., 192.168.1.1)")
 	hostBannerGrabCmd.Flags().Uint16("port", 0, "Address Port (e.g., 443)")
-	hostBannerGrabCmd.Flags().Int("timeout", 30, "Timeout limit in seconds")
+	hostBannerGrabCmd.Flags().Int("timeout", 5, "Timeout limit in seconds")
 	_ = hostBannerGrabCmd.MarkFlagRequired("target")
 	_ = hostBannerGrabCmd.MarkFlagRequired("port")
 

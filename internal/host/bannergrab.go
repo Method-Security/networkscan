@@ -32,7 +32,7 @@ func RunHostBannerGrab(ctx context.Context, timeout int, target string, port uin
 			FastMode:       false,
 			DefaultTimeout: time.Duration(timeout) * time.Second,
 			UDP:            false,
-			Verbose:        false,
+			Verbose:        true,
 		}
 		ipAddr, err := netip.ParseAddr(ip.String())
 		if err != nil {
