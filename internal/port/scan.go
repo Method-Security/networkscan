@@ -29,7 +29,7 @@ type Report struct {
 	Errors []string `json:"errors" yaml:"errors"`
 }
 
-func getPortScan(ctx context.Context, target string, ports string, topports string, scantype string) ([]Host, error) {
+func getPortScan(ctx context.Context, target string, ports string, topports string, threads int, scantype string) ([]Host, error) {
 	output := result.HostResult{}
 	hosts := []Host{}
 	// These settings mimic naabu's default settings
@@ -39,7 +39,7 @@ func getPortScan(ctx context.Context, target string, ports string, topports stri
 		NoColor:           true,
 		Rate:              runner.DefaultRateConnectScan,
 		Retries:           runner.DefaultRetriesConnectScan,
-		Threads:           25,
+		Threads:           threads,
 		Timeout:           runner.DefaultPortTimeoutConnectScan,
 		Host:              goflags.StringSlice{target},
 		SkipHostDiscovery: true,
@@ -99,10 +99,10 @@ func parseResult(result result.HostResult) Host {
 
 // RunPortScan takes a target host and a list of ports to scan and returns a report of all hosts that were scanned and
 // their open ports.
-func RunPortScan(ctx context.Context, target string, ports string, topport string, scantype string) (Report, error) {
+func RunPortScan(ctx context.Context, target string, ports string, topport string, threads int, scantype string) (Report, error) {
 	errors := []string{}
 
-	portscanResult, err := getPortScan(ctx, target, ports, topport, scantype)
+	portscanResult, err := getPortScan(ctx, target, ports, topport, threads, scantype)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
