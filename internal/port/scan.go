@@ -29,22 +29,37 @@ type Report struct {
 	Errors []string `json:"errors" yaml:"errors"`
 }
 
-func getPortScan(ctx context.Context, target string, ports string, topports string) ([]Host, error) {
+func getPortScan(ctx context.Context, target string, ports string, topports string, threads int, scantype string) ([]Host, error) {
 	output := result.HostResult{}
 	hosts := []Host{}
+	// These settings mimic naabu's default settings
 	portscanOpts := &runner.Options{
-		Silent:            true,
+		Silent:            false,
 		JSON:              true,
 		NoColor:           true,
-		Threads:           10,
-		Timeout:           runner.DefaultPortTimeoutSynScan,
+		Rate:              runner.DefaultRateConnectScan,
+		Retries:           runner.DefaultRetriesConnectScan,
+		Threads:           threads,
+		Timeout:           runner.DefaultPortTimeoutConnectScan,
 		Host:              goflags.StringSlice{target},
 		SkipHostDiscovery: true,
+		WarmUpTime:        2,
+		InputReadTimeout:  180000000000, // This is their default
 		OnResult: func(hr *result.HostResult) {
 			output = *hr
 			hosts = append(hosts, parseResult(output))
 		},
 	}
+
+	switch scantype {
+	case "syn":
+		portscanOpts.ScanType = runner.SynScan
+	case "connect":
+		portscanOpts.ScanType = runner.ConnectScan
+	default:
+		portscanOpts.ScanType = ""
+	}
+
 	if ports != "" {
 		portscanOpts.Ports = ports
 	}
@@ -84,10 +99,10 @@ func parseResult(result result.HostResult) Host {
 
 // RunPortScan takes a target host and a list of ports to scan and returns a report of all hosts that were scanned and
 // their open ports.
-func RunPortScan(ctx context.Context, target string, ports string, topport string) (Report, error) {
+func RunPortScan(ctx context.Context, target string, ports string, topport string, threads int, scantype string) (Report, error) {
 	errors := []string{}
 
-	portscanResult, err := getPortScan(ctx, target, ports, topport)
+	portscanResult, err := getPortScan(ctx, target, ports, topport, threads, scantype)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
