@@ -51,6 +51,11 @@ func RunBannerGrab(ctx context.Context, timeout int, target string, port uint16)
 			continue
 		}
 
+		if result == nil {
+			errors = append(errors, "scan result is empty")
+			continue
+		}
+
 		metadata := metadataMap(result.Metadata())
 		bannerResult := networkscan.BannerGrab{
 			Host:        result.Host,
