@@ -1,0 +1,12 @@
+types:
+  GeneralRequestInfo:
+    properties:
+      username: string
+      password: string
+      host: string
+      port: integer
+      timestamp: datetime
+  GeneralResponseInfo:
+    properties:
+      message: string
+      timestamp: datetime

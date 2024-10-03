@@ -1,0 +1,56 @@
+imports:
+  modules: ./modules.yml
+types:
+  ModuleType:
+    enum:
+      - ssh
+      - telnet
+  CredentialPair:
+    properties:
+      username: string
+      password: string
+  RequestUnion: 
+    discriminated: false
+    union:
+      - modules.GeneralRequestInfo
+  ResponseUnion: 
+    discriminated: false
+    union:
+      - modules.GeneralResponseInfo
+  BruteForceRunConfig:
+    properties:
+      module: ModuleType
+      targets: list<string>
+      usernames: optional<list<string>>
+      passwords: optional<list<string>>
+      timeout: integer
+      sleep: integer
+      retries: integer
+      successfulOnly: boolean
+      stopFirstSuccess: boolean
+  StatisticsInfo:
+    properties:
+      numUsernames: integer
+      numPasswords: integer
+      numSuccessful: integer
+      numFailed: integer
+      runConfig: BruteForceRunConfig
+  ResultInfo:
+    properties:
+      login: boolean
+      ratelimit: boolean
+  AttemptInfo:
+    properties:
+      request: optional<RequestUnion>
+      response: optional<ResponseUnion>
+      result: optional<ResultInfo>
+  BruteForceAttempt:
+    properties:
+      target: string
+      statistics: optional<StatisticsInfo>
+      attempts: optional<list<AttemptInfo>>
+  BruteForceReport:
+    properties:
+      module: ModuleType
+      bruteForceAttempts: optional<list<BruteForceAttempt>>
+      errors: optional<list<string>>

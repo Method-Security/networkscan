@@ -13,9 +13,15 @@ RUN \
   mkdir -p /opt/method/${CLI_NAME}/var/data && \
   mkdir -p /opt/method/${CLI_NAME}/var/data/tmp && \
   mkdir -p /opt/method/${CLI_NAME}/var/conf && \
+  mkdir -p /opt/method/${CLI_NAME}/var/conf/bruteforce && \
   mkdir -p /opt/method/${CLI_NAME}/var/log && \
   mkdir -p /opt/method/${CLI_NAME}/service/bin && \
   mkdir -p /mnt/output
+
+COPY configs/*                     /opt/method/${CLI_NAME}/var/conf/
+COPY configs/bruteforce/           /opt/method/${CLI_NAME}/var/conf/bruteforce/
+COPY configs/bruteforce/ssh        /opt/method/${CLI_NAME}/var/conf/ssh/
+COPY configs/bruteforce/telnet     /opt/method/${CLI_NAME}/var/conf/telnet/
 
 COPY ${CLI_NAME} /opt/method/${CLI_NAME}/service/bin/${CLI_NAME}
 
