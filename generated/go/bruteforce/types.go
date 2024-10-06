@@ -10,9 +10,10 @@ import (
 )
 
 type AttemptInfo struct {
-	Request  *RequestUnion  `json:"request,omitempty" url:"request,omitempty"`
-	Response *ResponseUnion `json:"response,omitempty" url:"response,omitempty"`
-	Result   *ResultInfo    `json:"result,omitempty" url:"result,omitempty"`
+	Request   *RequestUnion  `json:"request,omitempty" url:"request,omitempty"`
+	Response  *ResponseUnion `json:"response,omitempty" url:"response,omitempty"`
+	Result    *ResultInfo    `json:"result,omitempty" url:"result,omitempty"`
+	Timestamp time.Time      `json:"timestamp" url:"timestamp"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -23,12 +24,18 @@ func (a *AttemptInfo) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AttemptInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler AttemptInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AttemptInfo
+	var unmarshaler = struct {
+		embed
+		Timestamp *core.DateTime `json:"timestamp"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AttemptInfo(value)
+	*a = AttemptInfo(unmarshaler.embed)
+	a.Timestamp = unmarshaler.Timestamp.Time()
 
 	extraProperties, err := core.ExtractExtraProperties(data, *a)
 	if err != nil {
@@ -38,6 +45,18 @@ func (a *AttemptInfo) UnmarshalJSON(data []byte) error {
 
 	a._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AttemptInfo) MarshalJSON() ([]byte, error) {
+	type embed AttemptInfo
+	var marshaler = struct {
+		embed
+		Timestamp *core.DateTime `json:"timestamp"`
+	}{
+		embed:     embed(*a),
+		Timestamp: core.NewDateTime(a.Timestamp),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (a *AttemptInfo) String() string {
@@ -252,73 +271,109 @@ func (m ModuleType) Ptr() *ModuleType {
 }
 
 type RequestUnion struct {
-	GeneralRequestInfo *GeneralRequestInfo
+	Type           string
+	GeneralRequest *GeneralRequestInfo
 }
 
-func NewRequestUnionFromGeneralRequestInfo(value *GeneralRequestInfo) *RequestUnion {
-	return &RequestUnion{GeneralRequestInfo: value}
+func NewRequestUnionFromGeneralRequest(value *GeneralRequestInfo) *RequestUnion {
+	return &RequestUnion{Type: "generalRequest", GeneralRequest: value}
 }
 
 func (r *RequestUnion) UnmarshalJSON(data []byte) error {
-	valueGeneralRequestInfo := new(GeneralRequestInfo)
-	if err := json.Unmarshal(data, &valueGeneralRequestInfo); err == nil {
-		r.GeneralRequestInfo = valueGeneralRequestInfo
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	r.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", r)
+	}
+	switch unmarshaler.Type {
+	case "generalRequest":
+		value := new(GeneralRequestInfo)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		r.GeneralRequest = value
+	}
+	return nil
 }
 
 func (r RequestUnion) MarshalJSON() ([]byte, error) {
-	if r.GeneralRequestInfo != nil {
-		return json.Marshal(r.GeneralRequestInfo)
+	switch r.Type {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.Type, r)
+	case "generalRequest":
+		return core.MarshalJSONWithExtraProperty(r.GeneralRequest, "type", "generalRequest")
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestUnionVisitor interface {
-	VisitGeneralRequestInfo(*GeneralRequestInfo) error
+	VisitGeneralRequest(*GeneralRequestInfo) error
 }
 
 func (r *RequestUnion) Accept(visitor RequestUnionVisitor) error {
-	if r.GeneralRequestInfo != nil {
-		return visitor.VisitGeneralRequestInfo(r.GeneralRequestInfo)
+	switch r.Type {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.Type, r)
+	case "generalRequest":
+		return visitor.VisitGeneralRequest(r.GeneralRequest)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type ResponseUnion struct {
-	GeneralResponseInfo *GeneralResponseInfo
+	Type            string
+	GeneralResponse *GeneralResponseInfo
 }
 
-func NewResponseUnionFromGeneralResponseInfo(value *GeneralResponseInfo) *ResponseUnion {
-	return &ResponseUnion{GeneralResponseInfo: value}
+func NewResponseUnionFromGeneralResponse(value *GeneralResponseInfo) *ResponseUnion {
+	return &ResponseUnion{Type: "generalResponse", GeneralResponse: value}
 }
 
 func (r *ResponseUnion) UnmarshalJSON(data []byte) error {
-	valueGeneralResponseInfo := new(GeneralResponseInfo)
-	if err := json.Unmarshal(data, &valueGeneralResponseInfo); err == nil {
-		r.GeneralResponseInfo = valueGeneralResponseInfo
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	r.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", r)
+	}
+	switch unmarshaler.Type {
+	case "generalResponse":
+		value := new(GeneralResponseInfo)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		r.GeneralResponse = value
+	}
+	return nil
 }
 
 func (r ResponseUnion) MarshalJSON() ([]byte, error) {
-	if r.GeneralResponseInfo != nil {
-		return json.Marshal(r.GeneralResponseInfo)
+	switch r.Type {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.Type, r)
+	case "generalResponse":
+		return core.MarshalJSONWithExtraProperty(r.GeneralResponse, "type", "generalResponse")
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type ResponseUnionVisitor interface {
-	VisitGeneralResponseInfo(*GeneralResponseInfo) error
+	VisitGeneralResponse(*GeneralResponseInfo) error
 }
 
 func (r *ResponseUnion) Accept(visitor ResponseUnionVisitor) error {
-	if r.GeneralResponseInfo != nil {
-		return visitor.VisitGeneralResponseInfo(r.GeneralResponseInfo)
+	switch r.Type {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.Type, r)
+	case "generalResponse":
+		return visitor.VisitGeneralResponse(r.GeneralResponse)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type ResultInfo struct {
@@ -409,11 +464,10 @@ func (s *StatisticsInfo) String() string {
 }
 
 type GeneralRequestInfo struct {
-	Username  string    `json:"username" url:"username"`
-	Password  string    `json:"password" url:"password"`
-	Host      string    `json:"host" url:"host"`
-	Port      int       `json:"port" url:"port"`
-	Timestamp time.Time `json:"timestamp" url:"timestamp"`
+	Username string `json:"username" url:"username"`
+	Password string `json:"password" url:"password"`
+	Host     string `json:"host" url:"host"`
+	Port     int    `json:"port" url:"port"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -424,18 +478,12 @@ func (g *GeneralRequestInfo) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeneralRequestInfo) UnmarshalJSON(data []byte) error {
-	type embed GeneralRequestInfo
-	var unmarshaler = struct {
-		embed
-		Timestamp *core.DateTime `json:"timestamp"`
-	}{
-		embed: embed(*g),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+	type unmarshaler GeneralRequestInfo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*g = GeneralRequestInfo(unmarshaler.embed)
-	g.Timestamp = unmarshaler.Timestamp.Time()
+	*g = GeneralRequestInfo(value)
 
 	extraProperties, err := core.ExtractExtraProperties(data, *g)
 	if err != nil {
@@ -445,18 +493,6 @@ func (g *GeneralRequestInfo) UnmarshalJSON(data []byte) error {
 
 	g._rawJSON = json.RawMessage(data)
 	return nil
-}
-
-func (g *GeneralRequestInfo) MarshalJSON() ([]byte, error) {
-	type embed GeneralRequestInfo
-	var marshaler = struct {
-		embed
-		Timestamp *core.DateTime `json:"timestamp"`
-	}{
-		embed:     embed(*g),
-		Timestamp: core.NewDateTime(g.Timestamp),
-	}
-	return json.Marshal(marshaler)
 }
 
 func (g *GeneralRequestInfo) String() string {
@@ -472,8 +508,7 @@ func (g *GeneralRequestInfo) String() string {
 }
 
 type GeneralResponseInfo struct {
-	Message   string    `json:"message" url:"message"`
-	Timestamp time.Time `json:"timestamp" url:"timestamp"`
+	Message string `json:"message" url:"message"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -484,18 +519,12 @@ func (g *GeneralResponseInfo) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeneralResponseInfo) UnmarshalJSON(data []byte) error {
-	type embed GeneralResponseInfo
-	var unmarshaler = struct {
-		embed
-		Timestamp *core.DateTime `json:"timestamp"`
-	}{
-		embed: embed(*g),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+	type unmarshaler GeneralResponseInfo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*g = GeneralResponseInfo(unmarshaler.embed)
-	g.Timestamp = unmarshaler.Timestamp.Time()
+	*g = GeneralResponseInfo(value)
 
 	extraProperties, err := core.ExtractExtraProperties(data, *g)
 	if err != nil {
@@ -505,18 +534,6 @@ func (g *GeneralResponseInfo) UnmarshalJSON(data []byte) error {
 
 	g._rawJSON = json.RawMessage(data)
 	return nil
-}
-
-func (g *GeneralResponseInfo) MarshalJSON() ([]byte, error) {
-	type embed GeneralResponseInfo
-	var marshaler = struct {
-		embed
-		Timestamp *core.DateTime `json:"timestamp"`
-	}{
-		embed:     embed(*g),
-		Timestamp: core.NewDateTime(g.Timestamp),
-	}
-	return json.Marshal(marshaler)
 }
 
 func (g *GeneralResponseInfo) String() string {

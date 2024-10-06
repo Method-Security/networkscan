@@ -79,6 +79,7 @@ func (a *NetworkScan) InitAddressCommand() {
 			moduleEnum, err := bruteforcefern.NewModuleTypeFromString(module)
 			if err != nil {
 				a.OutputSignal.AddError(errors.New("invalid module"))
+				return
 			}
 
 			// Usernames

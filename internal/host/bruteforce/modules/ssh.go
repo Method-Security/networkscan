@@ -16,13 +16,12 @@ func (SSHLib *SSHLibrary) StandardPorts() []int {
 }
 
 func (SSHLib *SSHLibrary) BruteForce(host string, port int, credPair *bruteforce.CredentialPair, config *bruteforce.BruteForceRunConfig) (*bruteforce.AttemptInfo, []string) {
-	attempt := bruteforce.AttemptInfo{}
+	attempt := bruteforce.AttemptInfo{Timestamp: time.Now()}
 	errors := []string{}
 
 	username, password := "", ""
 	if credPair != nil {
 		username, password = credPair.Username, credPair.Password
-
 	}
 
 	sshConfig := &ssh.ClientConfig{
@@ -33,9 +32,7 @@ func (SSHLib *SSHLibrary) BruteForce(host string, port int, credPair *bruteforce
 	}
 
 	targetAddr := fmt.Sprintf("%s:%d", host, port)
-	requestTimeStamp := time.Now()
 	conn, err := ssh.Dial("tcp", targetAddr, sshConfig)
-	responseTimeStamp := time.Now()
 
 	var message string
 	if err != nil {
@@ -53,25 +50,23 @@ func (SSHLib *SSHLibrary) BruteForce(host string, port int, credPair *bruteforce
 	}
 
 	request := bruteforce.GeneralRequestInfo{
-		Username:  username,
-		Password:  password,
-		Host:      host,
-		Port:      port,
-		Timestamp: requestTimeStamp,
+		Username: username,
+		Password: password,
+		Host:     host,
+		Port:     port,
 	}
 	response := bruteforce.GeneralResponseInfo{
-		Message:   message,
-		Timestamp: responseTimeStamp,
+		Message: message,
 	}
-	attempt.Request = &bruteforce.RequestUnion{GeneralRequestInfo: &request}
-	attempt.Response = &bruteforce.ResponseUnion{GeneralResponseInfo: &response}
+	attempt.Request = bruteforce.NewRequestUnionFromGeneralRequest(&request)
+	attempt.Response = bruteforce.NewResponseUnionFromGeneralResponse(&response)
 	attempt.Result = SSHLib.AnalyzeResponse(attempt.Response)
 	return &attempt, errors
 }
 
 func (SSHLib *SSHLibrary) AnalyzeResponse(response *bruteforce.ResponseUnion) *bruteforce.ResultInfo {
 	result := bruteforce.ResultInfo{Login: false, Ratelimit: false}
-	if strings.Contains(response.GeneralResponseInfo.Message, "SUCCESSFUL") {
+	if strings.Contains(response.GeneralResponse.Message, "SUCCESSFUL") {
 		result.Login = true
 	}
 	// TODO: result.Ratelimit = true

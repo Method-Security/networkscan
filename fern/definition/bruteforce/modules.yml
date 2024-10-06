@@ -5,8 +5,6 @@ types:
       password: string
       host: string
       port: integer
-      timestamp: datetime
   GeneralResponseInfo:
     properties:
       message: string
-      timestamp: datetime

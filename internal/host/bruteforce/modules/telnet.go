@@ -18,10 +18,9 @@ func (TelnetLib *TelnetLibrary) StandardPorts() []int {
 }
 
 func (TelnetLib *TelnetLibrary) BruteForce(host string, port int, credPair *bruteforce.CredentialPair, config *bruteforce.BruteForceRunConfig) (*bruteforce.AttemptInfo, []string) {
-	attempt := bruteforce.AttemptInfo{}
+	attempt := bruteforce.AttemptInfo{Timestamp: time.Now()}
 	errors := []string{}
 
-	var useCreds bool
 	var message string
 
 	targetAddr := fmt.Sprintf("%s:%d", host, port)
@@ -30,31 +29,27 @@ func (TelnetLib *TelnetLibrary) BruteForce(host string, port int, credPair *brut
 	username, password := "", ""
 	if credPair != nil {
 		username, password = credPair.Username, credPair.Password
-		useCreds = true
 	}
 
-	requestTimeStamp := time.Now()
 	request := bruteforce.GeneralRequestInfo{
-		Username:  username,
-		Password:  password,
-		Host:      host,
-		Port:      port,
-		Timestamp: requestTimeStamp,
+		Username: username,
+		Password: password,
+		Host:     host,
+		Port:     port,
 	}
 
 	conn, err := net.DialTimeout("tcp", targetAddr, timeout)
 	if err != nil {
 		response := bruteforce.GeneralResponseInfo{
-			Message:   fmt.Sprintf("Failed to connect: %v", err),
-			Timestamp: time.Now(),
+			Message: fmt.Sprintf("Failed to connect: %v", err),
 		}
-		attempt.Request = &bruteforce.RequestUnion{GeneralRequestInfo: &request}
-		attempt.Response = &bruteforce.ResponseUnion{GeneralResponseInfo: &response}
+		attempt.Request = bruteforce.NewRequestUnionFromGeneralRequest(&request)
+		attempt.Response = bruteforce.NewResponseUnionFromGeneralResponse(&response)
 		attempt.Result = TelnetLib.AnalyzeResponse(attempt.Response)
 		return &attempt, append(errors, err.Error())
 	}
 
-	if useCreds {
+	if credPair != nil {
 		err = readUntilPromptWithTimeout(conn, "login: ", timeout)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Failed to read login prompt: %v", err))
@@ -63,7 +58,7 @@ func (TelnetLib *TelnetLibrary) BruteForce(host string, port int, credPair *brut
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Failed to send username: %v", err))
 		}
-		time.Sleep(2 * time.Second)
+		time.Sleep(1 * time.Second)
 
 		// Read password prompt with timeout
 		err = readUntilPromptWithTimeout(conn, "Password: ", timeout)
@@ -74,13 +69,14 @@ func (TelnetLib *TelnetLibrary) BruteForce(host string, port int, credPair *brut
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Failed to send password: %v", err))
 		}
+		time.Sleep(1 * time.Second)
 	}
 
-	time.Sleep(2 * time.Second)
 	_, err = conn.Write([]byte("echo \"success\"\r\n"))
 	if err != nil {
 		errors = append(errors, fmt.Sprintf("Failed to send echo command: %v", err))
 	}
+	time.Sleep(2 * time.Second)
 
 	// Read the full response
 	var fullResponse []byte
@@ -93,11 +89,10 @@ func (TelnetLib *TelnetLibrary) BruteForce(host string, port int, credPair *brut
 		message = filterPrintable(fullResponse)
 	}
 	response := bruteforce.GeneralResponseInfo{
-		Message:   message,
-		Timestamp: time.Now(),
+		Message: message,
 	}
-	attempt.Request = &bruteforce.RequestUnion{GeneralRequestInfo: &request}
-	attempt.Response = &bruteforce.ResponseUnion{GeneralResponseInfo: &response}
+	attempt.Request = bruteforce.NewRequestUnionFromGeneralRequest(&request)
+	attempt.Response = bruteforce.NewResponseUnionFromGeneralResponse(&response)
 	attempt.Result = TelnetLib.AnalyzeResponse(attempt.Response)
 
 	err = conn.Close()
@@ -110,10 +105,15 @@ func (TelnetLib *TelnetLibrary) BruteForce(host string, port int, credPair *brut
 
 func (TelnetLib *TelnetLibrary) AnalyzeResponse(response *bruteforce.ResponseUnion) *bruteforce.ResultInfo {
 	result := bruteforce.ResultInfo{Login: false, Ratelimit: false}
-	responseMessage := strings.ToLower(response.GeneralResponseInfo.Message)
-	if strings.Count(responseMessage, "success") >= 2 || strings.Contains(responseMessage, "welcome") {
-		result.Login = true
+	responseMessage := strings.ToLower(response.GeneralResponse.Message)
+	successIndicators := []string{"#", "$", "welcome"}
+	for _, indicator := range successIndicators {
+		if strings.Contains(responseMessage, indicator) {
+			result.Login = true
+			break
+		}
 	}
+	// TODO: result.Ratelimit = true
 	return &result
 }
 

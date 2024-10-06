@@ -10,13 +10,11 @@ types:
       username: string
       password: string
   RequestUnion: 
-    discriminated: false
     union:
-      - modules.GeneralRequestInfo
+      generalRequest: modules.GeneralRequestInfo
   ResponseUnion: 
-    discriminated: false
     union:
-      - modules.GeneralResponseInfo
+      generalResponse: modules.GeneralResponseInfo
   BruteForceRunConfig:
     properties:
       module: ModuleType
@@ -41,14 +39,15 @@ types:
       ratelimit: boolean
   AttemptInfo:
     properties:
-      request: optional<RequestUnion>
-      response: optional<ResponseUnion>
-      result: optional<ResultInfo>
+      request: RequestUnion
+      response: ResponseUnion
+      result: ResultInfo
+      timestamp: datetime
   BruteForceAttempt:
     properties:
       target: string
-      statistics: optional<StatisticsInfo>
-      attempts: optional<list<AttemptInfo>>
+      statistics: StatisticsInfo
+      attempts: list<AttemptInfo>
   BruteForceReport:
     properties:
       module: ModuleType
