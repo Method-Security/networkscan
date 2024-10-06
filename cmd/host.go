@@ -51,5 +51,6 @@ func (a *NetworkScan) InitHostCommand() {
 	hostDiscoverCmd.Flags().String("scantype", "", "Scan type for host discovery (tcpsyn | tcpack | icmpecho | icmptimestamp | arp | icmpaddressmask)")
 	_ = hostDiscoverCmd.MarkFlagRequired("target")
 	hostCmd.AddCommand(hostDiscoverCmd)
+
 	a.RootCmd.AddCommand(hostCmd)
 }
