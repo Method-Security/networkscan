@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Method-Security/networkscan/generated/go/bruteforce"
-	modules "github.com/Method-Security/networkscan/internal/host/bruteforce/modules"
+	modules "github.com/Method-Security/networkscan/internal/address/bruteforce/modules"
 )
 
 type BruteforceLibrary interface {

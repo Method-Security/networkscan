@@ -5,7 +5,7 @@ import (
 
 	bruteforcefern "github.com/Method-Security/networkscan/generated/go/bruteforce"
 	"github.com/Method-Security/networkscan/internal/address"
-	bruteforce "github.com/Method-Security/networkscan/internal/host/bruteforce"
+	bruteforce "github.com/Method-Security/networkscan/internal/address/bruteforce"
 	"github.com/Method-Security/networkscan/utils"
 	"github.com/spf13/cobra"
 )
