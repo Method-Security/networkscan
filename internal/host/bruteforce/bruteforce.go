@@ -48,7 +48,7 @@ func (be *BruteforceEngine) Run(ctx context.Context, target string, credPair *br
 				break
 			}
 			if attempt.Result.Ratelimit {
-				time.Sleep(time.Duration(config.Sleep) * time.Second)
+				time.Sleep(time.Duration(config.Sleep) * time.Millisecond)
 			}
 		}
 	}

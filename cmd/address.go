@@ -167,7 +167,7 @@ func (a *NetworkScan) InitAddressCommand() {
 	bruteForceCmd.Flags().StringSlice("usernamelists", []string{}, "File paths containing usernames to use in attack")
 	bruteForceCmd.Flags().StringSlice("passwordlists", []string{}, "File paths containing passwords to use in attack")
 	bruteForceCmd.Flags().Int("timeout", 3000, "Timeout per request (MilliSeconds)")
-	bruteForceCmd.Flags().Int("sleep", 3, "Sleep time between requests (Seconds)")
+	bruteForceCmd.Flags().Int("sleep", 3000, "Sleep time between requests (MilliSeconds)")
 	bruteForceCmd.Flags().Int("retries", 2, "Number of Attempts per credential pair")
 	bruteForceCmd.Flags().Bool("successfulonly", false, "Only show successful attempts")
 	bruteForceCmd.Flags().Bool("stopfirstsuccess", false, "Stop on the first successful login")
