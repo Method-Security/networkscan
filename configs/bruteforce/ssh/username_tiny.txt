@@ -16,5 +16,6 @@ sync
 sys
 system
 test
+ubuntu
 user
 uucp

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Method-Security/networkscan/generated/go/bruteforce"
-	modules "github.com/Method-Security/networkscan/internal/host/bruteforce/modules"
+	modules "github.com/Method-Security/networkscan/internal/address/bruteforce/modules"
 )
 
 type BruteforceLibrary interface {
@@ -48,7 +48,7 @@ func (be *BruteforceEngine) Run(ctx context.Context, target string, credPair *br
 				break
 			}
 			if attempt.Result.Ratelimit {
-				time.Sleep(time.Duration(config.Sleep) * time.Second)
+				time.Sleep(time.Duration(config.Sleep) * time.Millisecond)
 			}
 		}
 	}
@@ -102,13 +102,20 @@ func BruteForceAttack(ctx context.Context, config *bruteforce.BruteForceRunConfi
 		// Authenticated attempts
 		if !successful {
 			credPairs := getCredentialPairs(config.Usernames, config.Passwords)
-			for _, credPair := range credPairs {
+			totalPairs := len(credPairs)
+			interval := (totalPairs / 20) + 1 // For when (totalPairs / 20) == 0
+
+			for i, credPair := range credPairs {
 				attempt, successful, errs := engine.Run(ctx, target, &credPair, config)
 				errors = append(errors, errs...)
 				attempts = append(attempts, attempt...)
 
 				if successful && config.StopFirstSuccess {
 					break
+				}
+
+				if i%interval == 0 {
+					fmt.Printf("%d credential pairs have been tried (%d/%d)\n", i, i, totalPairs)
 				}
 			}
 		}
