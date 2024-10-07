@@ -28,7 +28,7 @@ func (SSHLib *SSHLibrary) BruteForce(host string, port int, credPair *bruteforce
 		User:            username,
 		Auth:            []ssh.AuthMethod{ssh.Password(password)},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         time.Duration(config.Timeout) * time.Second,
+		Timeout:         time.Duration(config.Timeout) * time.Millisecond,
 	}
 
 	targetAddr := fmt.Sprintf("%s:%d", host, port)
