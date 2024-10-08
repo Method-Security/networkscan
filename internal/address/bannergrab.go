@@ -91,16 +91,31 @@ func unmarshalMapString(headerStr string) map[string]string {
 	return data
 }
 
-func metadataMap(resultMetadata plugins.Metadata) map[string]string {
-	metadata := make(map[string]string)
-	v := reflect.ValueOf(resultMetadata)
-	t := v.Type()
-	for i := 0; i < v.NumField(); i++ {
-		field := t.Field(i)
-		value := v.Field(i)
-		metadata[field.Name] = fmt.Sprintf("%v", value.Interface())
+func metadataMap(metadata plugins.Metadata) map[string]string {
+	result := make(map[string]string)
+
+	// Check if metadata implements the standard Map() method
+	if mapper, ok := metadata.(interface{ Map() map[string]string }); ok {
+		return mapper.Map()
 	}
-	return metadata
+
+	// If not, use reflection as a fallback
+	v := reflect.ValueOf(metadata)
+	if v.Kind() == reflect.Map {
+		for _, key := range v.MapKeys() {
+			value := v.MapIndex(key)
+			result[key.String()] = fmt.Sprintf("%v", value.Interface())
+		}
+	} else if v.Kind() == reflect.Struct {
+		t := v.Type()
+		for i := 0; i < v.NumField(); i++ {
+			field := t.Field(i)
+			value := v.Field(i)
+			result[field.Name] = fmt.Sprintf("%v", value.Interface())
+		}
+	}
+
+	return result
 }
 
 func getIPs(target string) ([]net.IP, error) {
