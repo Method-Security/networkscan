@@ -93,26 +93,37 @@ func unmarshalMapString(headerStr string) map[string]string {
 
 func metadataMap(metadata plugins.Metadata) map[string]string {
 	result := make(map[string]string)
-
+	// Check if metadata is nil
+	if metadata == nil {
+		return result
+	}
 	// Check if metadata implements the standard Map() method
 	if mapper, ok := metadata.(interface{ Map() map[string]string }); ok {
 		return mapper.Map()
 	}
-
-	// If not, use reflection as a fallback
+	// Use reflection as a fallback
 	v := reflect.ValueOf(metadata)
-	if v.Kind() == reflect.Map {
+	switch v.Kind() {
+	case reflect.Map:
+		// Handle the case where metadata is a map
 		for _, key := range v.MapKeys() {
 			value := v.MapIndex(key)
 			result[key.String()] = fmt.Sprintf("%v", value.Interface())
 		}
-	} else if v.Kind() == reflect.Struct {
+	case reflect.Struct:
+		// Handle the case where metadata is a struct
 		t := v.Type()
 		for i := 0; i < v.NumField(); i++ {
 			field := t.Field(i)
+			// Skip unexported fields
+			if field.PkgPath != "" {
+				continue
+			}
 			value := v.Field(i)
 			result[field.Name] = fmt.Sprintf("%v", value.Interface())
 		}
+	default:
+		return result
 	}
 
 	return result

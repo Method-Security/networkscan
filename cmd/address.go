@@ -24,6 +24,8 @@ func (a *NetworkScan) InitAddressCommand() {
 		Short: "Grab banner from a network address",
 		Long:  `Grab banner from a network address`,
 		Run: func(cmd *cobra.Command, args []string) {
+			defer a.OutputSignal.PanicHandler(cmd.Context())
+
 			target, err := cmd.Flags().GetString("target")
 			if err != nil {
 				a.OutputSignal.AddError(err)
